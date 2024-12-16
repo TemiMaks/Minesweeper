@@ -15,15 +15,15 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   if (level == 1) {
     *rows = 8;
     *cols = 8;
-    *bombNumber = *rows * *cols * 0.15;
+    *bombNumber = 10;
   } else if (level == 2) {
     *rows = 16;
     *cols = 16;
-    *bombNumber = *rows * *cols * 0.2;
+    *bombNumber = 40;
   } else if (level == 3) {
     *rows = 16;
     *cols = 32;
-    *bombNumber = *rows * *cols * 0.2;
+    *bombNumber = 99;
   } else {
     printf("Zly poziom\n");
   }
@@ -67,9 +67,30 @@ void placeBombs(char **board, int rows, int cols, int bombNumber) {
 
 void showBoard(char **board, int rows, int cols) {
   // Wyświetlenie planszy
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
-      printf("%c ", board[i][j]);
+  for (int i = -1; i < rows; i++) {
+    for (int j = -1; j < cols; j++) {
+      if (i < 0) {
+        if (j < 0)
+          printf("  ");
+        else 
+          printf("%d ", j + 1);
+        if (j < 9 && rows > 9)
+          printf(" ");
+      }
+      else {
+        if (j < 0) {
+          if (i < 9 && rows > 9) 
+            printf("%d  ", i + 1);
+          else
+            printf("%d ", i + 1);
+          }
+        else {
+          if (rows < 9)
+            printf("%c ", board[i][j]);
+          else
+            printf("%c  ", board[i][j]);
+        }
+      }
     }
     printf("\n");
  }
