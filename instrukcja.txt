@@ -1,0 +1,38 @@
+plansza o 3 poziomach trudnosci:
+łatwy-8x8 i 15% bomb
+średni- 16x16 i 20% bomb
+trudny- 16x32 i 20% bomb
+
+input:r 3 4
+        r c ->odkrywamy pole
+jesli bomba to wstaw X i zakoncz
+liczba bomb 1-8
+psute pole to spacja, odkrywa sie wszystkie puste pola stykajace
+pozwala zaznaczac flage f uzytkownikowi input: f 2 3
+
+
+zapis 5 najlepszych graczy (UID-np.imie po zakonczeniu gry) (liczimy score i zapisujemy w pliku)
+
+Score:
+poziom trudnosci:
+latwy-mnoznik 1
+sredni-2
+trudny-3
+I to przemnozyc przez ilosc odkrytych pol
+
+poza konczeniu pokazac wszystkie bomby jakie byly
+
+pozniej wyczyscic mape
+
+termin do przedostatnich zajec w semestrze
+moga byc zespoly 2 osobowe albo samodzielnie
+
+Dodatkowo sprawozdanie z projektu
+
+Testy dzialania programu, np. sprawdzajace warunki brzegowe
+1 czesc- instrukcja dla osoby ktora pierwszy raz chce zagrac- cot ojest, jak uruchomic, komendy, jak grac,
+powiedziec ze na koncu jest lista uzytkownikow
+jak skompilowac program
+2 czesc- krotki opis modulow jakie zostaly zastosowane, jak podzielilismy program na moduly i co one robia
+
+Bedzie prezentacja projektu, kto co wykonywal
