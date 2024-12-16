@@ -6,7 +6,6 @@
 
 // Funkcja do generowania losowej liczby miedzy min a max (wlacznie)
 int getRandomNumber(int min, int max) {
-  srand(time(NULL));  //Do main??
   return rand() % (max - min + 1) + min;
 }
 
@@ -76,27 +75,20 @@ void showBoard(char **board, int rows, int cols) {
  }
 }
 
-
-
-void initializeBoard(int level) {
-  int rows = 0, cols = 0, bombNumber = 0;
-
-  // Ustawienie parametrów planszy
-  setBoardParams(level, &rows, &cols, &bombNumber);
-
+char** initializeBoard(int level, int rows, int cols) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
   //Sprawdzenie poprawnosci przypisania pamieci
   if (board == NULL) {
     printf("Blad alokacji pamieci!\n");
-    return;
+    return NULL;
   }
   for (int i = 0; i < rows; i++) {
     board[i] = (char *)malloc(cols * sizeof(char));
     if (board[i] == NULL) {
       printf("Blad alokacji dla rzedu %d!\n", i);
-      return;
+      return NULL;
     }
   }
 
@@ -107,12 +99,10 @@ void initializeBoard(int level) {
     }
   }
 
-  // Rozmieszczanie bomb
-  placeBombs(board, rows, cols, bombNumber);
+  return board;
+}
 
-  //Wyswietlenie
-  showBoard(board,rows,cols);
-
+void freeBoard(char **board, int rows) {
   // Zwolnienie pamięci
   for (int i = 0; i < rows; i++) {
     free(board[i]);
