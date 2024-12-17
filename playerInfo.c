@@ -18,6 +18,36 @@ printf("Zdobyles %d punktow na poziomie %d\n", score, level);
 return score;
 }
 
+int isUIDUnique(int uid){
+  FILE *file = fopen("playerInfo.txt", "r");
+  if (file == NULL) {
+    return 1;
+  } //UID unikalne bo nie ma pliku
+
+  char line[256];
+  while (fgets(line, sizeof(line), file)) {
+    int existingUID;
+    if (sscanf(line, "UID gracza: %d", &existingUID) == 1) {
+      if (existingUID == uid) {
+        fclose(file);
+        return 0; // UID już istnieje
+      }
+    }
+  }
+
+  fclose(file);
+  return 1; // UID jest unikalne
+}
+
+int generateUniqueUID() {
+  int uid;
+  while (isUIDUnique(uid) == 0) { //Powtarzaj, az UID bedzie unikalne
+    uid = getRandomNumber(1000000, 50000000);
+  }
+
+  return uid;
+}
+
 void savePlayerInfo(Info *Player){
 FILE *out = fopen("playerInfo.txt", "a");  //a-append, dopisuje tylko do zawartosci
 if(out == NULL){
@@ -56,11 +86,10 @@ Info* getPlayerInfo() {
     return NULL;
   }
 
-  // Usunięcie znaku nowej linii po fgets
+  // Usunięcie znaku nowej linii po fgets, to tez powoduje ze sie program od razu nie wylacza przynajmniej
   Player->name[strcspn(Player->name, "\n")] = '\0';
 
-  // Losowanie UID
-  Player->UID = getRandomNumber(1000000, 50000000);
+  Player->UID = generateUniqueUID();
 
   void savePlayerInfo(Info *Player);
 
