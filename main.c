@@ -24,14 +24,12 @@ int main() {
 
     //Logika gry
     bool playState = true;
+    system("clear");
     while (playState == true) {
         //Wyswietlanie aktualnej planszy
         showCurrentBoard(Player_board, rows, cols);
         entry(&playState, board, Player_board, rows, cols);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
     }
-    //Wyswietlenie planszy koncowej
-    printf("Plansza koncowa\n");
-    showCurrentBoard(board,rows,cols);
 
     //Zwolnienie pamieci
     freeBoard(board, rows);

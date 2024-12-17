@@ -48,8 +48,17 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
 
 // Funkcja oznaczająca komórkę
 void markCell(char **board, char **Player_board, int row, int col, int rows, int cols) {
-        Player_board[row][col] = 'f';
-        printf("Oznaczyłes komorke [%d][%d] jako flage.\n", row, col);
+	if (Player_board[row][col] == '-') {
+        	printf("Oznaczyłes komorke [%d][%d] jako flage.\n", row, col);
+		Player_board[row][col] = 'f';
+	}
+	else if (Player_board[row][col] == 'f') {
+		printf("Usunales flage komorki [%d][%d].\n", row, col);
+		Player_board[row][col] = '-';
+	}
+	else {
+		printf("Nie mozna oznaczyc komorki [%d][%d] jako flagi; komorka juz odkryta.\n", row, col);
+	}
         showCurrentBoard(Player_board, rows, cols);
         //Tu mozna by bylo dodac cos na zasadzie, ze jak komorka jest juz odkryta to zabrac mozliwosc oznaczania flaga
 }
@@ -73,6 +82,8 @@ void entry(bool *playState, char **board, char **Player_board, int rows, int col
             continue; // Powrót na początek pętli
         }
 
+	system("clear"); // Czysci ekran przed pokazaniem planszy po wykonanym ruchu
+	
         // Ruchy
         if (moveType == 'r') {
             showCell(playState, board, Player_board, row, col, rows, cols);
@@ -80,6 +91,7 @@ void entry(bool *playState, char **board, char **Player_board, int rows, int col
             markCell(board, Player_board, row, col, rows, cols);
         } else {
             printf("Nieznany ruch: '%c'.\n", moveType);
+	    showCurrentBoard(Player_board, rows, cols);
         }
     }
 
