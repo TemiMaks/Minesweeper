@@ -65,8 +65,8 @@ void placeBombs(char **board, int rows, int cols, int bombNumber) {
   free(bombs);
 }
 
-void showBoard(char **board, int rows, int cols) {
-  // Wyświetlenie planszy
+void showCurrentBoard(char **board, int rows, int cols) {
+  // Wyświetlenie aktualnej planszy
   for (int i = -1; i < rows; i++) {
     for (int j = -1; j < cols; j++) {
       if (i < 0) {
@@ -113,10 +113,10 @@ char** initializeBoard(int level, int rows, int cols) {
     }
   }
 
-  // Inicjalizacja planszy, na razie tylko kropki
+  // Inicjalizacja planszy, jako nieodkryte komorki
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      board[i][j] = '.';
+      board[i][j] = '-';
     }
   }
 
