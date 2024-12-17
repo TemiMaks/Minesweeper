@@ -9,6 +9,7 @@ typedef struct playerInfo{
 
 
 int getScore(char **Player_board, int level, int rows, int cols);
+void savePlayerInfo(Info *Player);
 Info* getPlayerInfo();
 
 #endif //PLAYERINFO_H
