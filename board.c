@@ -90,26 +90,37 @@ void showCurrentBoard(char **board, int rows, int cols) {
   for (int i = -1; i < rows; i++) {
     for (int j = -1; j < cols; j++) {
       if (i < 0) {
-        if (j < 0)
-          printf("  ");
-        else 
+        if (j < 0) {
+          printf("    ");
+	}
+        else
           printf("%d ", j);
-        if (j <= 9 && rows > 9)
+        if (j <= 9 && cols > 9)
           printf(" ");
       }
       else {
         if (j < 0) {
           if (i <= 9 && rows > 9) 
-            printf("%d  ", i);
+            printf("%d  | ", i);
           else
-            printf("%d ", i);
+            printf("%d | ", i);
           }
         else {
-          if (rows <= 9)
+          if (cols <= 9)
             printf("%c ", board[i][j]);
           else
             printf("%c  ", board[i][j]);
         }
+      } 
+    }
+    if (i < 0) {
+      printf("\n   ");
+      if (rows > 9 )
+	printf(" ");
+      for (int j = 0; j < cols; j++) {
+        printf("--");
+	if (cols > 9)
+	  printf("-");
       }
     }
     printf("\n");

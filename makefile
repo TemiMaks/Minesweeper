@@ -2,7 +2,7 @@
 CC = cc
 
 # Files
-SRCS = main.c board.c input.c
+SRCS = main.c board.c input.c playerInfo.c
 EXEC = a.out
 
 # Default target
