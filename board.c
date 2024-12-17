@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <stdbool.h>
 #include "board.h"
 
@@ -30,7 +29,7 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
 }
 
 void placeBombs(char **board, int rows, int cols, int bombNumber) {
-  int *bombs = (int*)malloc(bombNumber * sizeof(int));  // Przechowuje numery komórek na których będą bomby
+  int *bombs = (int*)malloc(bombNumber * sizeof(int));  // Przechowuje numery komorek na których będą bomby
   int bombsPlaced = 0;
 
   while (bombsPlaced < bombNumber) {
