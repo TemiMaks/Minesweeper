@@ -8,21 +8,21 @@ int getScore(char **Player_board, int level, int rows, int cols){
   int cellNumber = 0;
   for(int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
-      if(Player_board[i][j] >=48 && Player_board[i][j] <= 56 ){  //Bo to kod ASCII od 0-8
+      if(Player_board[i][j] >=48 && Player_board[i][j] <= 56 ){  // Bo to kod ASCII od 0-8
        cellNumber++;
       }
     }
   }
-int score = cellNumber * level;
-printf("Zdobyles %d punktow na poziomie %d\n", score, level);
-return score;
+  int score = cellNumber * level;
+  printf("Zdobyles %d punktow na poziomie %d\n", score, level);
+  return score;
 }
 
 int isUIDUnique(int uid){
   FILE *file = fopen("playerInfo.txt", "r");
   if (file == NULL) {
-    return 1;
-  } //UID unikalne bo nie ma pliku
+    return 1;  // UID unikalne, bo plik nie istnieje
+  }
 
   char line[256];
   while (fgets(line, sizeof(line), file)) {
@@ -30,52 +30,83 @@ int isUIDUnique(int uid){
     if (sscanf(line, "UID gracza: %d", &existingUID) == 1) {
       if (existingUID == uid) {
         fclose(file);
-        return 0; // UID już istnieje
+        return 0;  // UID już istnieje
       }
     }
   }
 
   fclose(file);
-  return 1; // UID jest unikalne
+  return 1;  // UID jest unikalne
 }
 
 int generateUniqueUID() {
-  int uid;
-  while (isUIDUnique(uid) == 0) { //Powtarzaj, az UID bedzie unikalne
-    uid = getRandomNumber(1000000, 50000000);
-  }
-
+  int uid = getRandomNumber(1000000, 50000000);;
+while (!isUIDUnique(uid)){ // Powtarzaj, aż UID będzie unikalne
+  uid = getRandomNumber(1000000, 50000000);
+}
   return uid;
 }
 
-void savePlayerInfo(Info *Player){
-FILE *out = fopen("playerInfo.txt", "a");  //a-append, dopisuje tylko do zawartosci
-if(out == NULL){
-  printf("[!] Blad otwarcia pliku zapisu\n");
-  return;
+int compareScores(const void *a, const void *b) {
+  Info *playerA = (Info *)a;
+  Info *playerB = (Info *)b;
+  return playerB->score - playerA->score; // Sortowanie malejąco
 }
+
+void updateFile(Info *Player){
+  int max_players = 5;
+  FILE *file = fopen("playerInfo.txt", "r+"); // Tryb odczyt i zapis, taki kompromis
+  if (file == NULL) {
+    printf("[!] Błąd otwarcia pliku!\n");
+    return;
+  }
+
+  Info players[max_players];
+  int playerCount = 0;
+
+  // Wczytanie danych z pliku
+  while (fscanf(file, "Nazwa gracza: %s\nUID gracza: %d\nWynik gracza: %d\n----------------------------\n",
+          players[playerCount].name, &players[playerCount].UID, &players[playerCount].score) == 3) {
+    playerCount++;
+  }
+
+  fclose(file);
+
+  // Dodanie nowego gracza do tablicy
+  if (playerCount < max_players) {
+    players[playerCount] = *Player;
+    playerCount++;
+  } else {
+    // Jeśli mamy już 5 graczy, zastępujemy najgorszego
+    players[max_players - 1] = *Player;
+  }
+
+  // Sortowanie graczy według wyników (malejąco)
+  qsort(players, playerCount, sizeof(Info), compareScores);
+
   // Zapisanie danych do pliku
-  fprintf(out, "Nazwa gracza: %s\n", Player->name);
-  fprintf(out, "UID gracza: %d\n", Player->UID);
-  fprintf(out, "Wynik gracza: %d\n", Player->score);
-  fprintf(out, "----------------------------\n");
+  FILE *fileW = fopen("playerInfo.txt", "w"); // Nadpisanie pliku
 
-  // Zamknięcie pliku
-  fclose(out);
+  // Zapisanie najlepszych 5 graczy
+  for (int i = 0; i < max_players; i++) {
+    fprintf(fileW, "Nazwa gracza: %s\n", players[i].name);
+    fprintf(fileW, "UID gracza: %d\n", players[i].UID);
+    fprintf(fileW, "Wynik gracza: %d\n", players[i].score);
+    fprintf(fileW, "----------------------------\n");
+  }
 
-  printf("Dane gracza zapisane pomyślnie.\n");
-
+  fclose(fileW);
+  printf("Dane o graczach zaktualizowane.\n");
 }
 
 Info* getPlayerInfo() {
-  // Alokacja pamięci dla struktury gracza
   Info *Player = (Info *)malloc(sizeof(Info));
   if (Player == NULL) {
     printf("[!] Error alokacji pamieci dla Info\n");
     return NULL;
   }
 
-  // Przed wczytaniem nazwy czyszczenie bufora, chwala StackOverflow bo bym tego nie wymyslil
+  // Czyszczenie bufora przed wczytaniem nazwy
   while (getchar() != '\n' && getchar() != EOF);
 
   // Wczytanie nazwy gracza
@@ -86,14 +117,11 @@ Info* getPlayerInfo() {
     return NULL;
   }
 
-  // Usunięcie znaku nowej linii po fgets, to tez powoduje ze sie program od razu nie wylacza przynajmniej
-  Player->name[strcspn(Player->name, "\n")] = '\0';
+  Player->name[strcspn(Player->name, "\n")] = '\0';  // Usuwanie znaku nowej linii
 
   Player->UID = generateUniqueUID();
 
-  void savePlayerInfo(Info *Player);
+  updateFile(Player);
 
-  return Player; // Zeby zwolnic w main
+  return Player;
 }
-
-
