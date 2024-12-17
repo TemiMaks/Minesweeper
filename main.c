@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "board.h"
 #include "input.h"
-
+#include "playerInfo.h"
 
 
 int main() {
@@ -31,10 +31,15 @@ int main() {
         entry(&playState, board, Player_board, rows, cols);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
     }
 
+    //Uzytkownik
+    getScore(Player_board, level, rows, cols);
+    Info *Player = getPlayerInfo();
+
     //Zwolnienie pamieci
     freeBoard(board, rows);
     freeBoard(Player_board, rows);
 
+    free(Player);
 
     return 0;
 }
