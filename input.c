@@ -47,10 +47,10 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
 }
 
 // Funkcja oznaczająca komórkę
-void markCell(char **board, char **Player_board, int row, int col) {
+void markCell(char **board, char **Player_board, int row, int col, int rows, int cols) {
         Player_board[row][col] = 'f';
         printf("Oznaczyłes komorke [%d][%d] jako flage.\n", row, col);
-        showCurrentBoard(Player_board, row, col);
+        showCurrentBoard(Player_board, rows, cols);
         //Tu mozna by bylo dodac cos na zasadzie, ze jak komorka jest juz odkryta to zabrac mozliwosc oznaczania flaga
 }
 
@@ -77,7 +77,7 @@ void entry(bool *playState, char **board, char **Player_board, int rows, int col
         if (moveType == 'r') {
             showCell(playState, board, Player_board, row, col, rows, cols);
         } else if (moveType == 'f') {
-            markCell(board, Player_board, row, col);
+            markCell(board, Player_board, row, col, rows, cols);
         } else {
             printf("Nieznany ruch: '%c'.\n", moveType);
         }
