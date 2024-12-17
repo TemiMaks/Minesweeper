@@ -41,7 +41,7 @@ int isUIDUnique(int uid){
 
 int generateUniqueUID() {
   int uid = getRandomNumber(1000000, 50000000);;
-while (!isUIDUnique(uid)){ // Powtarzaj, aż UID będzie unikalne
+while (isUIDUnique(uid) == 0){ // Powtarzaj, aż UID będzie unikalne
   uid = getRandomNumber(1000000, 50000000);
 }
   return uid;
@@ -53,53 +53,69 @@ int compareScores(const void *a, const void *b) {
   return playerB->score - playerA->score; // Sortowanie malejąco
 }
 
-void updateFile(Info *Player){
-  int max_players = 5;
-  FILE *file = fopen("playerInfo.txt", "r+"); // Tryb odczyt i zapis, taki kompromis
-  if (file == NULL) {
-    printf("[!] Błąd otwarcia pliku!\n");
-    return;
-  }
 
-  Info players[max_players];
-  int playerCount = 0;
+void updateFile(Info *Player) {
+    int max_players = 5;
+    FILE *file = fopen("playerInfo.txt", "r+");
 
-  // Wczytanie danych z pliku
-  while (fscanf(file, "Nazwa gracza: %s\nUID gracza: %d\nWynik gracza: %d\n----------------------------\n",
-          players[playerCount].name, &players[playerCount].UID, &players[playerCount].score) == 3) {
-    playerCount++;
-  }
+    if (file == NULL) {
+        file = fopen("playerInfo.txt", "w");  // Tworzy plik, jeśli nie istnieje
+        if (file == NULL) {
+            printf("[!] Błąd otwarcia pliku!\n");
+            return;
+        }
+    }
 
-  fclose(file);
+    Info players[max_players];
+    int playerCount = 0;
 
-  // Dodanie nowego gracza do tablicy
-  if (playerCount < max_players) {
-    players[playerCount] = *Player;
-    playerCount++;
-  } else {
-    // Jeśli mamy już 5 graczy, zastępujemy najgorszego
-    players[max_players - 1] = *Player;
-  }
+    // Wczytanie danych z pliku
+    while (fscanf(file, "Nazwa gracza: %s\nUID gracza: %d\nWynik gracza: %d\n----------------------------\n",
+                  players[playerCount].name, &players[playerCount].UID, &players[playerCount].score) == 3) {
+        playerCount++;
+    }
 
-  // Sortowanie graczy według wyników (malejąco)
-  qsort(players, playerCount, sizeof(Info), compareScores);
+    // Jeśli jest mniej niż 5 graczy, dodaj nowego gracza
+    if (playerCount < max_players) {
+        players[playerCount] = *Player;
+        playerCount++;
+        printf("Dane o graczach zaktualizowane.\n");
+    } else {
+        // Sprawdź, czy nowy gracz ma wystarczająco dobry wynik, by wejść do czołówki
+        int minScoreIndex = 0;
+        for (int i = 0; i < playerCount - 1; i++) {
+            if (players[i].score < players[minScoreIndex].score) {
+                minScoreIndex = i;
+            }
+        }
 
-  // Zapisanie danych do pliku
-  FILE *fileW = fopen("playerInfo.txt", "w"); // Nadpisanie pliku
+        if (Player->score > players[minScoreIndex].score) {
+            // Zastępujemy najgorszego gracza
+            players[minScoreIndex] = *Player;
+            printf("Dane o graczach zaktualizowane.\n");
+        } else {
+          printf("Najniższy wynik %d przewyzsza twoj wynik %d.\n", players[minScoreIndex].score, Player->score);
+        }
+    }
 
-  // Zapisanie najlepszych 5 graczy
-  for (int i = 0; i < max_players; i++) {
-    fprintf(fileW, "Nazwa gracza: %s\n", players[i].name);
-    fprintf(fileW, "UID gracza: %d\n", players[i].UID);
-    fprintf(fileW, "Wynik gracza: %d\n", players[i].score);
-    fprintf(fileW, "----------------------------\n");
-  }
+    // Sortowanie graczy według wyników (malejąco)
+    qsort(players, playerCount, sizeof(Info), compareScores);
 
-  fclose(fileW);
-  printf("Dane o graczach zaktualizowane.\n");
+    // Zapisanie danych do pliku
+    freopen("playerInfo.txt", "w", file);  // Nadpisanie pliku
+
+    // Zapisanie najlepszych graczy
+    for (int i = 0; i < playerCount; i++) {
+        fprintf(file, "Nazwa gracza: %s\n", players[i].name);
+        fprintf(file, "UID gracza: %d\n", players[i].UID);
+        fprintf(file, "Wynik gracza: %d\n", players[i].score);
+        fprintf(file, "----------------------------\n");
+    }
+
+    fclose(file);
 }
 
-Info* getPlayerInfo() {
+Info* getPlayerInfo(int score) {
   Info *Player = (Info *)malloc(sizeof(Info));
   if (Player == NULL) {
     printf("[!] Error alokacji pamieci dla Info\n");
@@ -117,9 +133,8 @@ Info* getPlayerInfo() {
     return NULL;
   }
 
-  Player->name[strcspn(Player->name, "\n")] = '\0';  // Usuwanie znaku nowej linii
-
   Player->UID = generateUniqueUID();
+  Player->score = score;
 
   updateFile(Player);
 
