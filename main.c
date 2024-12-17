@@ -7,9 +7,9 @@
 
 
 
-int main() {
-    int level=2;
+int main(int argc, char **argv) {
     srand(time(NULL));
+    int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 3) ? atoi(argv[1]) : 2;
 
     int rows = 0, cols = 0, bombNumber = 0;
 
@@ -17,24 +17,20 @@ int main() {
     setBoardParams(level, &rows, &cols, &bombNumber);
 
     char **board = initializeBoard(level, rows, cols);
-    char **Player_board = initializeBoard(level, rows, cols);
+    char **Player_board = initializePlayerBoard(level, rows, cols);
 
     // Rozmieszczanie bomb
     placeBombs(board, rows, cols, bombNumber);
 
-    //Logika gry
-    bool playState = true;
-    system("clear");
-    while (playState == true) {
-        //Wyswietlanie aktualnej planszy
-        showCurrentBoard(Player_board, rows, cols);
-        entry(&playState, board, Player_board, rows, cols);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
-    }
+    // Zapisanie komorek z 'liczbami' bomb
+    solveBoard(board, rows, cols);
+
+    system("clear"); // Wyczyszczenie ekranu przed rozpoczeciem
+    entry(board, Player_board, rows, cols);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     //Zwolnienie pamieci
     freeBoard(board, rows);
     freeBoard(Player_board, rows);
-
 
     return 0;
 }

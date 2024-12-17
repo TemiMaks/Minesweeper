@@ -4,72 +4,77 @@
 #include "input.h"
 #include "board.h"
 
+// Funkcja odkrywajaca pobliskie puste komorki
+void showFreeCells(char **board, char **Player_board, int row, int col, int rows, int cols) {
+	int i;
+	int directions[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}; // Kierunki sprawdzanych komorek
+
+	Player_board[row][col] = board[row][col];
+	if (board[row][col] == '.') { // Jezeli komorka jest pusta to odkrywane sa kolejne
+		for (i = 0; i < 8; i++) {
+			int newRow = row + directions[i][0];
+			int newCol = col + directions[i][1];
+			if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && Player_board[newRow][newCol] == '#') { 
+				/* Sprawdzanie czy nastepna komorka jest w zakresie tablicy oraz czy jest nieodkryta 
+				 * (zakladamy, ze nie moze byc to bomba poniewaz przed bomba zawsze znajdziemy komorke z 'numerem') */
+				showFreeCells(board, Player_board, newRow, newCol, rows, cols);
+			}
+		}
+	}
+}
+
 // Funkcja pokazująca komórkę
-//Oczywiscie z moimi umiejetnosciami r 1 1 pokazuje [2][2], bo jakzeby inaczej
 void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols) {
-    Player_board[row][col] = board[row][col];
 
     // Jeżeli trafiliśmy na bombę, kończymy grę
-    if (Player_board[row][col] == 'B') {
+    if (board[row][col] == 'B') {
         printf("Koniec gry! BumBum\n");
         showCurrentBoard(board, rows, cols); // Końcowa plansza
         *playState = false;
         return; // Koniec gry
     }
-    //Jesli nie jest to bomba to liczymy ilosc bomb wokol komorki zeby ja wyswietlic
-    else if (Player_board[row][col] == '-') {
-        int bombCount = 0;
-
-        // Ruch wokół
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                // W granicach planszy
-                if (row + i >= 0 && row + i < rows && col + j >= 0 && col + j < cols) {
-                    if (board[row + i][col + j] == 'B') {
-                        bombCount++;
-                    }
-                }
-            }
-        }
-
-        // Jeśli wokół komórki są jakieś bomby, wyświetlamy liczbę
-        if (bombCount > 0) {
-            Player_board[row][col] = '0' + bombCount;  // Zmieniamy pustą komórkę na liczbę bomb
-        }
-        else {
-          //No i dorobic wyswietlanie pustych komorek wokol aktualnej
-          //void showFreeCells(row, col);
-        }
+    //Jesli nie jest to bomba to odkrywamy komorke
+    else if (Player_board[row][col] == '#') {
+	printf("Odkryto komorke [%d][%d].\n", row, col);
+        showFreeCells(board, Player_board, row, col, rows, cols);
+    }
+    else if (Player_board[row][col] == 'f') {
+	printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);
+    }
+    else {
+	printf("Nie mozna odkryc komorki [%d][%d]; komorka juz odkryta.\n", row, col);
     }
 
-    // Jeżeli komórka nie jest bombą ani pustą komórką, pokazujemy wynik
+    // Na koniec pokazujemy aktualna plansze
     showCurrentBoard(Player_board, rows, cols);
 }
 
 // Funkcja oznaczająca komórkę
 void markCell(char **board, char **Player_board, int row, int col, int rows, int cols) {
-	if (Player_board[row][col] == '-') {
+	if (Player_board[row][col] == '#') {
         	printf("Oznaczyłes komorke [%d][%d] jako flage.\n", row, col);
 		Player_board[row][col] = 'f';
 	}
 	else if (Player_board[row][col] == 'f') {
 		printf("Usunales flage komorki [%d][%d].\n", row, col);
-		Player_board[row][col] = '-';
+		Player_board[row][col] = '#';
 	}
 	else {
 		printf("Nie mozna oznaczyc komorki [%d][%d] jako flagi; komorka juz odkryta.\n", row, col);
 	}
         showCurrentBoard(Player_board, rows, cols);
-        //Tu mozna by bylo dodac cos na zasadzie, ze jak komorka jest juz odkryta to zabrac mozliwosc oznaczania flaga
 }
 
 // Funkcja do obsługi wejścia od użytkownika
-void entry(bool *playState, char **board, char **Player_board, int rows, int cols) {
+void entry(char **board, char **Player_board, int rows, int cols) {
     char moveType = '\0';
     int row = 0;
     int col = 0;
+    bool playState = true;    
+    printf("Saper. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n");
+    showCurrentBoard(Player_board, rows, cols);
 
-    while (*playState) {  // Pętla działa, dopóki gra trwa
+    while (playState) {  // Pętla działa, dopóki gra trwa
         printf("Twój ruch: ");
 
         // Wczytanie ruchu i współrzędnych
@@ -77,7 +82,7 @@ void entry(bool *playState, char **board, char **Player_board, int rows, int col
 
         // Sprawdzenie poprawności argumentów
         if (inputCount != 3 || row < 0 || col < 0 || row >= rows || col >= cols) {
-            printf("Błąd danych! Wprowadź format: litera spacja liczba spacja liczba.\n");
+            printf("Nieprawidlowy ruch. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n");
             while (getchar() != '\n'); // Czyszczenie bufora wejściowego
             continue; // Powrót na początek pętli
         }
@@ -86,11 +91,11 @@ void entry(bool *playState, char **board, char **Player_board, int rows, int col
 	
         // Ruchy
         if (moveType == 'r') {
-            showCell(playState, board, Player_board, row, col, rows, cols);
+            showCell(&playState, board, Player_board, row, col, rows, cols);
         } else if (moveType == 'f') {
             markCell(board, Player_board, row, col, rows, cols);
         } else {
-            printf("Nieznany ruch: '%c'.\n", moveType);
+            printf("Nieznany ruch: '%c'. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n", moveType);
 	    showCurrentBoard(Player_board, rows, cols);
         }
     }

@@ -65,6 +65,27 @@ void placeBombs(char **board, int rows, int cols, int bombNumber) {
   free(bombs);
 }
 
+// Zapisywanie liczb w polach graniczacych z bombami
+void solveBoard(char **board, int rows, int cols) {
+	int i, j, k;
+	int directions[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}; // Kierunki sprawdzanych pol
+	for (i = 0; i < rows; i++) {
+		for (j = 0; j < cols; j++) {
+			if (board[i][j] != 'B') {
+				char nearBombs = '0';
+				for (k = 0; k < 8; k++) { // Sprawdza pola graniczace w 8 kierunkach
+					if (i + directions[k][0] >= 0 && j + directions[k][1] >= 0 && i + directions[k][0] < rows && j + directions[k][1] < cols && board[i + directions[k][0]][j + directions[k][1]] == 'B') { // Sprawdzenie czy graniczace pola zawieraja sie w tablicy oraz czy sa bombami
+						nearBombs += 1;
+					}
+				}
+				if (nearBombs != '0') {
+					board[i][j] = nearBombs;
+				}
+			}
+		}
+	}
+}
+
 void showCurrentBoard(char **board, int rows, int cols) {
   // Wyświetlenie aktualnej planszy
   for (int i = -1; i < rows; i++) {
@@ -96,6 +117,35 @@ void showCurrentBoard(char **board, int rows, int cols) {
  }
 }
 
+// Tablica widoczna dla gracza
+char** initializePlayerBoard(int level, int rows, int cols) {
+  // Alokacja pamięci dla planszy
+  char **board = (char **)malloc(rows * sizeof(char *));
+
+  //Sprawdzenie poprawnosci przypisania pamieci
+  if (board == NULL) {
+    printf("Blad alokacji pamieci!\n");
+    return NULL;
+  }
+  for (int i = 0; i < rows; i++) {
+    board[i] = (char *)malloc(cols * sizeof(char));
+    if (board[i] == NULL) {
+      printf("Blad alokacji dla rzedu %d!\n", i);
+      return NULL;
+    }
+  }
+
+  // Inicjalizacja planszy, jako nieodkryte komorki
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      board[i][j] = '#';
+    }
+  }
+
+  return board;
+}
+
+/// Tablica niewidoczna dla gracza, zawierajaca polozenia bomb i liczby bomb na sasiadujacych komorkach
 char** initializeBoard(int level, int rows, int cols) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
@@ -116,7 +166,7 @@ char** initializeBoard(int level, int rows, int cols) {
   // Inicjalizacja planszy, jako nieodkryte komorki
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      board[i][j] = '-';
+      board[i][j] = '.';
     }
   }
 
