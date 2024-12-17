@@ -32,14 +32,12 @@ int main() {
     }
 
     //Uzytkownik
-    getScore(Player_board, level, rows, cols);
-    Info *Player = getPlayerInfo();
+    int score = getScore(Player_board, level, rows, cols);
+    getPlayerInfo(score);
 
     //Zwolnienie pamieci
     freeBoard(board, rows);
     freeBoard(Player_board, rows);
-
-    free(Player);
 
     return 0;
 }
