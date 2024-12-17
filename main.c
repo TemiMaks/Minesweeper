@@ -6,7 +6,6 @@
 #include "input.h"
 #include "playerInfo.h"
 
-
 int main(int argc, char **argv) {
     srand(time(NULL));
     int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 3) ? atoi(argv[1]) : 2;
@@ -32,9 +31,15 @@ int main(int argc, char **argv) {
     int score = getScore(Player_board, level, rows, cols);
     getPlayerInfo(score);
 
+    //Uzytkownik
+    getScore(Player_board, level, rows, cols);
+    Info *Player = getPlayerInfo();
+
     //Zwolnienie pamieci
     freeBoard(board, rows);
     freeBoard(Player_board, rows);
+
+    free(Player);
 
     return 0;
 }
