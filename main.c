@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     entry(board, Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     //Uzytkownik
-    int score = getScore(Player_board, level, rows, cols);
+    int score = getScore(Player_board, level, rows, cols, bombNumber);
     Info *Player = getPlayerInfo(score);
 
     //Zwolnienie pamieci
