@@ -4,7 +4,7 @@
 #include "playerInfo.h"
 #include "board.h"
 
-int getScore(char **Player_board, int level, int rows, int cols, int bombCount){
+int getScore(char **Player_board, int level, int rows, int cols){
   int cellNumber = 0;
   for(int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
@@ -14,15 +14,27 @@ int getScore(char **Player_board, int level, int rows, int cols, int bombCount){
     }
   }
 int score = cellNumber * level;
+printf("Zdobyles %d punktow na %d poziomie\n", score, level);
+return score;
+}
 
-//Warunki wygranej
-  if (cellNumber == rows * cols - bombCount) {
-    printf("Wygrales! Zdobyles %d punktow na poziomie %d\n", score, level);
-    return score;
-  } else {
-    printf("Zdobyles %d punktow na poziomie %d\n", score, level);
+int didWin(char **Player_board,int level, int bombNumber, int rows, int cols){
+  //Warunki wygranej
+    int knownCells = 0;
+  for(int i = 0; i < rows; i++){
+    for(int j = 0; j < cols; j++){
+      if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
+       knownCells++;
+      }
+    }
   }
-  return score;
+ if(knownCells == rows * cols - bombNumber){
+   printf("Wygrales!");
+   return 1;
+ } else {
+   return 0;
+ }
+
 }
 
 int isUIDUnique(int uid){

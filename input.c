@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "playerInfo.h"
 #include "input.h"
 #include "board.h"
 
@@ -24,7 +25,7 @@ void showFreeCells(char **board, char **Player_board, int row, int col, int rows
 }
 
 // Funkcja pokazująca komórkę
-void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols) {
+void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int level, int bombNumber) {
 
     // Jeżeli trafiliśmy na bombę, kończymy grę
     if (board[row][col] == 'B') {
@@ -37,6 +38,9 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     else if (Player_board[row][col] == '#') {
 	printf("Odkryto komorke [%d][%d].\n", row, col);
     showFreeCells(board, Player_board, row, col, rows, cols);
+    if(didWin(Player_board, level, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+      *playState = false;
+    }
     }
     else if (Player_board[row][col] == 'f') {
 	printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);
@@ -76,7 +80,7 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
     printf("Saper. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n");
     showCurrentBoard(Player_board, rows, cols);
     
-    while (playState) {  // Pętla działa, dopóki gra trwa
+    while (playState == true) {  // Pętla działa, dopóki gra trwa
         printf("Twój ruch: ");
 	
         // Wczytanie ruchu i współrzędnych
@@ -99,7 +103,7 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
 		}
 	    	firstMove = false;
 	    }
-            showCell(&playState, board, Player_board, row, col, rows, cols);
+            showCell(&playState, board, Player_board, row, col, rows, cols, level, bombNumber);
         } else if (moveType == 'f') {
             markCell(board, Player_board, row, col, rows, cols);
         } else {

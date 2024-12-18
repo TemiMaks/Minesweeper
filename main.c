@@ -7,7 +7,7 @@
 #include "playerInfo.h"
 
 int main(int argc, char **argv) {
-    srand(time(NULL));
+    //srand(time(NULL));
     int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 3) ? atoi(argv[1]) : 2;
 
     int rows = 0, cols = 0, bombNumber = 0;
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     entry(board, Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     //Uzytkownik
-    int score = getScore(Player_board, level, rows, cols, bombNumber);
+    int score = getScore(Player_board, level, rows, cols);
     Info *Player = getPlayerInfo(score);
 
     //Zwolnienie pamieci
