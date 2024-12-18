@@ -156,7 +156,7 @@ char** initializePlayerBoard(int level, int rows, int cols) {
 }
 
 /// Tablica niewidoczna dla gracza, zawierajaca polozenia bomb i liczby bomb na sasiadujacych komorkach
-char** initializeBoard(int level, int rows, int cols) {
+char** initializeBoard(int level, int rows, int cols, int bombNumber) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
@@ -179,6 +179,12 @@ char** initializeBoard(int level, int rows, int cols) {
       board[i][j] = '.';
     }
   }
+  
+  // Rozmieszczanie bomb
+  placeBombs(board, rows, cols, bombNumber);
+
+  // Zapisanie komorek z 'liczbami' bomb
+  solveBoard(board, rows, cols);
 
   return board;
 }
