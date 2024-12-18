@@ -15,17 +15,11 @@ int main(int argc, char **argv) {
     // Ustawienie parametrów planszy
     setBoardParams(level, &rows, &cols, &bombNumber);
 
-    char **board = initializeBoard(level, rows, cols);
+    char **board = initializeBoard(level, rows, cols, bombNumber);
     char **Player_board = initializePlayerBoard(level, rows, cols);
 
-    // Rozmieszczanie bomb
-    placeBombs(board, rows, cols, bombNumber);
-
-    // Zapisanie komorek z 'liczbami' bomb
-    solveBoard(board, rows, cols);
-
     system("clear"); // Wyczyszczenie ekranu przed rozpoczeciem
-    entry(board, Player_board, rows, cols);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
+    entry(board, Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     //Uzytkownik
     int score = getScore(Player_board, level, rows, cols);
