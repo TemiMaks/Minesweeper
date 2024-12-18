@@ -66,17 +66,19 @@ void markCell(char **board, char **Player_board, int row, int col, int rows, int
 }
 
 // Funkcja do obsługi wejścia od użytkownika
-void entry(char **board, char **Player_board, int rows, int cols) {
+void entry(char **board, char **Player_board, int rows, int cols, int level, int bombNumber) {
     char moveType = '\0';
     int row = 0;
     int col = 0;
-    bool playState = true;
+    bool playState = true; 
+    bool firstMove = true;   
+
     printf("Saper. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n");
     showCurrentBoard(Player_board, rows, cols);
-
+    
     while (playState) {  // Pętla działa, dopóki gra trwa
         printf("Twój ruch: ");
-
+	
         // Wczytanie ruchu i współrzędnych
         int inputCount = scanf(" %c %d %d", &moveType, &row, &col); // Spacja przed %c to ignorowanie bialych znakow
 
@@ -91,6 +93,12 @@ void entry(char **board, char **Player_board, int rows, int cols) {
 	
         // Ruchy
         if (moveType == 'r') {
+	    if (firstMove) {
+	    	while (board[row][col] != '.') {
+		    board = initializeBoard(level, rows, cols, bombNumber);
+		}
+	    	firstMove = false;
+	    }
             showCell(&playState, board, Player_board, row, col, rows, cols);
         } else if (moveType == 'f') {
             markCell(board, Player_board, row, col, rows, cols);
