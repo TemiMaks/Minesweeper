@@ -14,7 +14,7 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   if (level == 1) {
     *rows = 8;
     *cols = 8;
-    *bombNumber = 1;
+    *bombNumber = 10;
   } else if (level == 2) {
     *rows = 16;
     *cols = 16;
