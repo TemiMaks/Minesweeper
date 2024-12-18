@@ -4,17 +4,24 @@
 #include "playerInfo.h"
 #include "board.h"
 
-int getScore(char **Player_board, int level, int rows, int cols){
+int getScore(char **Player_board, int level, int rows, int cols, int bombCount){
   int cellNumber = 0;
   for(int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
-      if(Player_board[i][j] >=48 && Player_board[i][j] <= 56 ){  // Bo to kod ASCII od 0-8
+      if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
        cellNumber++;
       }
     }
   }
-  int score = cellNumber * level;
-  printf("Zdobyles %d punktow na poziomie %d\n", score, level);
+int score = cellNumber * level;
+
+//Warunki wygranej
+  if (cellNumber == rows * cols - bombCount) {
+    printf("Wygrales! Zdobyles %d punktow na poziomie %d\n", score, level);
+    return score;
+  } else {
+    printf("Zdobyles %d punktow na poziomie %d\n", score, level);
+  }
   return score;
 }
 
@@ -27,7 +34,7 @@ int isUIDUnique(int uid){
   char line[256];
   while (fgets(line, sizeof(line), file)) {
     int existingUID;
-    if (sscanf(line, "UID gracza: %d", &existingUID) == 1) {
+    if (sscanf(line, "UID gracza: %d", &existingUID) == 1) {  // Czyta z pliku linie
       if (existingUID == uid) {
         fclose(file);
         return 0;  // UID już istnieje
