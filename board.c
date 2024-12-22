@@ -86,46 +86,67 @@ void solveBoard(char **board, int rows, int cols) {
 }
 
 void showCurrentBoard(char **board, int rows, int cols) {
-  // Wyświetlenie aktualnej planszy
-  for (int i = -1; i < rows; i++) {
-    for (int j = -1; j < cols; j++) {
-      if (i < 0) {
-        if (j < 0) {
-          printf("    ");
-	}
-        else
-          printf("%d ", j);
-        if (j <= 9 && cols > 9)
-          printf(" ");
-      }
-      else {
-        if (j < 0) {
-          if (i <= 9 && rows > 9) 
-            printf("%d  | ", i);
-          else
-            printf("%d | ", i);
-          }
-        else {
-          if (cols <= 9)
-            printf("%c ", board[i][j]);
-          else
-            printf("%c  ", board[i][j]);
+    // Wyświetlenie aktualnej planszy
+    for (int i = -1; i < rows; i++) {
+        for (int j = -1; j < cols; j++) {
+            if (i < 0) { // Nagłówki kolumn
+                if (j < 0) {
+                    printf("    ");
+                } else {
+                    printf("%d ", j);
+                }
+                if (j <= 9 && cols > 9)
+                    printf(" ");
+            } else { // Wiersze planszy
+                if (j < 0) { // Nagłówki wierszy
+                    if (i <= 9 && rows > 9)
+                        printf("%d  | ", i); // Białe dla nagłówków wierszy
+                    else
+                        printf("%d | ", i);
+                } else { // Pola gry
+                    if (board[i][j] == '*') { // Jeśli to mina, wyświetl normalnie
+                        printf("%c ", board[i][j]);
+                    } else if (board[i][j] == '#') { // Nieodkryte pole, normalnie
+                        printf("%c ", board[i][j]);
+                    } else { // Liczba
+                        // Kolorowanie liczb od 1 do 8
+                        if (board[i][j] == '1') {
+                            printf("\033[38;5;32m%c \033[0m", board[i][j]); // Zielony dla 1
+                        } else if (board[i][j] == '2') {
+                            printf("\033[38;5;34m%c \033[0m", board[i][j]); // Niebieski dla 2
+                        } else if (board[i][j] == '3') {
+                            printf("\033[38;5;196m%c \033[0m", board[i][j]); // Czerwony dla 3
+                        } else if (board[i][j] == '4') {
+                            printf("\033[38;5;208m%c \033[0m", board[i][j]); // Pomarańczowy dla 4
+                        } else if (board[i][j] == '5') {
+                            printf("\033[38;5;226m%c \033[0m", board[i][j]); // Żółty dla 5
+                        } else if (board[i][j] == '6') {
+                            printf("\033[38;5;82m%c \033[0m", board[i][j]); // Zielony dla 6
+                        } else if (board[i][j] == '7') {
+                            printf("\033[38;5;135m%c \033[0m", board[i][j]); // Różowy dla 7
+                        } else if (board[i][j] == '8') {
+                            printf("\033[38;5;93m%c \033[0m", board[i][j]); // Fioletowy dla 8
+                        } else {
+                            printf("%c ", board[i][j]); // Inne (np. '0') wyświetl normalnie
+                        }
+                    }
+                }
+            }
         }
-      } 
+        if (i < 0) {
+            printf("\n   ");
+            if (rows > 9)
+                printf(" ");
+            for (int j = 0; j < cols; j++) {
+                printf("--");
+                if (cols > 9)
+                    printf("-");
+            }
+        }
+        printf("\n");
     }
-    if (i < 0) {
-      printf("\n   ");
-      if (rows > 9 )
-	printf(" ");
-      for (int j = 0; j < cols; j++) {
-        printf("--");
-	if (cols > 9)
-	  printf("-");
-      }
-    }
-    printf("\n");
- }
 }
+
 
 // Tablica widoczna dla gracza
 char** initializePlayerBoard(int level, int rows, int cols) {
