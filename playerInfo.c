@@ -29,7 +29,7 @@ int didWin(char **Player_board,int level, int bombNumber, int rows, int cols){
     }
   }
  if(knownCells == rows * cols - bombNumber){
-   printf("Wygrales!");
+   printf("Wygrales!\n");
    return 1;
  } else {
    return 0;
