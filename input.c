@@ -99,6 +99,8 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
         if (moveType == 'r') {
 	    if (firstMove) {
 	    	while (board[row][col] != '.') {
+            //Mysle ze tu dobrym pomyslem jest zwalnianie pamieci niepasujacej tablicy
+            freeBoard(board, rows);
 		    board = initializeBoard(level, rows, cols, bombNumber);
 		}
 	    	firstMove = false;
