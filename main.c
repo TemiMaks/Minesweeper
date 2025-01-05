@@ -8,7 +8,23 @@
 
 int main(int argc, char **argv) {
     srand(time(NULL));
-    int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 3) ? atoi(argv[1]) : 2;
+    printf("Prosze podac poziom trudnosci 1-3: ");
+    int level;
+
+    // Sprawdzenie, czy podano liczbę
+    while (scanf("%d", &level) != 1) {
+        printf("Bledny argument, podaj poprawny: ");
+        while (getchar() != '\n'); // Czyści bufor wejściowy
+    }
+
+    // Sprawdzenie zakresu liczby
+    while (level < 1 || level > 3) {
+        printf("Liczba poza zakresem, podaj poprawna (1-3): ");
+        while (scanf("%d", &level) != 1) {
+            printf("Bledny argument, podaj poprawny: ");
+            while (getchar() != '\n'); // Czyści bufor wejściowy
+        }
+    }
 
     int rows = 0, cols = 0, bombNumber = 0;
 
