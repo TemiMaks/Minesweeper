@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     //Uzytkownik
     int score = getScore(Player_board, level, rows, cols);
     Info *Player = getPlayerInfo(score);
+    printFile();
 
     //Zwolnienie pamieci
     freeBoard(board, rows);

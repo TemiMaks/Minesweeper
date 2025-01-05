@@ -14,5 +14,6 @@ Info *getPlayerInfo(int score);
 int generateUniqueUID();
 int isUIDUnique(int uid);
 int didWin(char **Player_board,int level, int bombNumber, int rows, int cols);
+void printFile();
 
 #endif //PLAYERINFO_H
