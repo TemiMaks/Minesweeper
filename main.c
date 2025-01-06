@@ -1,15 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdbool.h>
+#include <string.h>
 #include "board.h"
 #include "input.h"
 #include "playerInfo.h"
+#include "file.h"
 
 int main(int argc, char **argv) {
+    //Sprawdzam czy uzytkownik chce skorzystac z trybu wczytywania pliku
+    if (argc == 3 && strcmp(argv[1], "-f") == 0) {
+        // Sprawdzenie, czy plik ma rozszerzenie .txt
+        const char *file = argv[2];
+        size_t len = strlen(file);
+        if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
+            printf("Tryb czytania z pliku\n");
+            char **fileBoard = loadFromFile(argv[2]);
+        }
+
+
+
+    }
+printf("%d",argc);
+printf("%s",argv[1]);
+printf("%s",argv[2]);
+
     srand(time(NULL));
     printf("Prosze podac poziom trudnosci 1-3: ");
     int level;
+    int rows = 0, cols = 0, bombNumber = 0;
 
     // Sprawdzenie, czy podano liczbę
     while (scanf("%d", &level) != 1) {
@@ -25,8 +44,6 @@ int main(int argc, char **argv) {
             while (getchar() != '\n'); // Czyści bufor wejściowy
         }
     }
-
-    int rows = 0, cols = 0, bombNumber = 0;
 
     // Ustawienie parametrów planszy
     setBoardParams(level, &rows, &cols, &bombNumber);
