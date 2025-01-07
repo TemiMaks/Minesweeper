@@ -25,7 +25,7 @@ void showFreeCells(char **board, char **Player_board, int row, int col, int rows
 }
 
 // Funkcja pokazująca komórkę
-void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int level, int bombNumber) {
+void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int bombNumber) {
 
     // Jeżeli trafiliśmy na bombę, kończymy grę
     if (board[row][col] == 'B') {
@@ -38,7 +38,35 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     else if (Player_board[row][col] == '#') {
 	printf("Odkryto komorke [%d][%d].\n", row, col);
     showFreeCells(board, Player_board, row, col, rows, cols);
-    if(didWin(Player_board, level, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+    if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+      *playState = false;
+    }
+    }
+    else if (Player_board[row][col] == 'f') {
+	printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);
+    }
+    else {
+	printf("Nie mozna odkryc komorki [%d][%d]; komorka juz odkryta.\n", row, col);
+    }
+
+    // Na koniec pokazujemy aktualna plansze
+    showCurrentBoard(Player_board, rows, cols);
+}
+// Funkcja oblsugujaca 'r' z pliku
+void showCellFromFile(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int bombNumber) {
+
+    // Jeżeli trafiliśmy na bombę, kończymy grę
+    if (board[row][col] == 'B') {
+        printf("Koniec gry! BumBum\n");
+        showCurrentBoard(board, rows, cols); // Końcowa plansza
+        *playState = false;
+        return; // Koniec gry
+    }
+    //Jesli nie jest to bomba to odkrywamy komorke
+    else if (Player_board[row][col] == '#') {
+	printf("Odkryto komorke [%d][%d].\n", row, col);
+    showFreeCells(board, Player_board, row, col, rows, cols);
+    if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
       *playState = false;
     }
     }
@@ -69,8 +97,20 @@ void markCell(char **board, char **Player_board, int row, int col, int rows, int
         showCurrentBoard(Player_board, rows, cols);
 }
 
+// Funkcja oznaczająca komórkę z pliku
+void markCellFromFile(char **board, char **Player_board, int row, int col, int rows, int cols) {
+	if (Player_board[row][col] == '#') {
+		Player_board[row][col] = 'f';
+	}
+	else if (Player_board[row][col] == 'f') {
+		Player_board[row][col] = '#';
+	}
+	else {
+	}
+}
+
 // Funkcja do obsługi wejścia od użytkownika
-void entry(char **board, char **Player_board, int rows, int cols, int level, int bombNumber) {
+void entry(char **board, char **Player_board, int rows, int cols, int bombNumber) {
     char moveType = '\0';
     int row = 0;
     int col = 0;
@@ -101,11 +141,11 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
 	    	while (board[row][col] != '.') {
             //Mysle ze tu dobrym pomyslem jest zwalnianie pamieci niepasujacej tablicy
             freeBoard(board, rows);
-		    board = initializeBoard(level, rows, cols, bombNumber);
+		    board = initializeBoard(rows, cols, bombNumber);
 		}
 	    	firstMove = false;
 	    }
-            showCell(&playState, board, Player_board, row, col, rows, cols, level, bombNumber);
+            showCell(&playState, board, Player_board, row, col, rows, cols, bombNumber);
         } else if (moveType == 'f') {
             markCell(board, Player_board, row, col, rows, cols);
         } else {
@@ -115,3 +155,43 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
     }
 
 }
+
+//Nowe entry do oblsugi pliku
+int entryFromFile(char **board, char **Player_board, int rows, int cols, int bombNumber, char moveType, int row, int col) {
+    bool playState = true;
+
+    while (playState == true) {  // Pętla działa, dopóki gra trwa
+        // Sprawdzenie poprawności argumentów
+        if (row < 0 || col < 0 || row >= rows || col >= cols) {
+            printf("Nieprawidlowy ruch. Przerywam czytanie");
+            return 1;
+        }
+        // Ruchy
+        if (moveType == 'r') {
+        	showCellFromFile(&playState, board, Player_board, row, col, rows, cols, bombNumber);
+        } else if (moveType == 'f') {
+            markCellFromFile(board, Player_board, row, col, rows, cols);
+        } else {
+            printf("Nieznany ruch: '%c'. Przerywam czytanie\n", moveType);
+            playState = false;
+	    	return 1;
+        }
+    }
+	return 0;
+}
+
+int getCorrectInputs(char **Player_board, int rows, int cols, int bombNumber){
+int correctInputs = 0;
+  for(int i = 0; i < rows; i++){
+    for(int j = 0; j < cols; j++){
+      if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
+       correctInputs++;
+      }
+    }
+  }
+return correctInputs;
+}
+
+
+
+

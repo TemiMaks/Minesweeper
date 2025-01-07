@@ -18,7 +18,7 @@ printf("Zdobyles %d punktow na %d poziomie\n", score, level);
 return score;
 }
 
-int didWin(char **Player_board,int level, int bombNumber, int rows, int cols){
+int didWin(char **Player_board,int bombNumber, int rows, int cols){
   //Warunki wygranej
     int knownCells = 0;
   for(int i = 0; i < rows; i++){

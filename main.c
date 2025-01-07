@@ -15,15 +15,14 @@ int main(int argc, char **argv) {
         size_t len = strlen(file);
         if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
             printf("Tryb czytania z pliku\n");
-            char **fileBoard = loadFromFile(argv[2]);
+            int bombNumber = 0;
+            char **fileBoard = loadFromFile(argv[2], &bombNumber);
+            return 0;
         }
 
-
-
+    return 1;
     }
-printf("%d",argc);
-printf("%s",argv[1]);
-printf("%s",argv[2]);
+
 
     srand(time(NULL));
     printf("Prosze podac poziom trudnosci 1-3: ");
@@ -48,11 +47,11 @@ printf("%s",argv[2]);
     // Ustawienie parametrów planszy
     setBoardParams(level, &rows, &cols, &bombNumber);
 
-    char **board = initializeBoard(level, rows, cols, bombNumber);
-    char **Player_board = initializePlayerBoard(level, rows, cols);
+    char **board = initializeBoard(rows, cols, bombNumber);
+    char **Player_board = initializePlayerBoard(rows, cols);
 
     system("clear"); // Wyczyszczenie ekranu przed rozpoczeciem
-    entry(board, Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
+    entry(board, Player_board, rows, cols,bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     //Uzytkownik
     int score = getScore(Player_board, level, rows, cols);

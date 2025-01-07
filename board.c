@@ -139,10 +139,8 @@ void showCurrentBoard(char **board, int rows, int cols) {
     }
 }
 
-
-
 // Tablica widoczna dla gracza
-char** initializePlayerBoard(int level, int rows, int cols) {
+char** initializePlayerBoard(int rows, int cols) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
@@ -170,7 +168,7 @@ char** initializePlayerBoard(int level, int rows, int cols) {
 }
 
 /// Tablica niewidoczna dla gracza, zawierajaca polozenia bomb i liczby bomb na sasiadujacych komorkach
-char** initializeBoard(int level, int rows, int cols, int bombNumber) {
+char** initializeBoard(int rows, int cols, int bombNumber) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
