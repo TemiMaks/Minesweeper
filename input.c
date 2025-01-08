@@ -38,7 +38,7 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     else if (Player_board[row][col] == '#') {
 	printf("Odkryto komorke [%d][%d].\n", row, col);
     showFreeCells(board, Player_board, row, col, rows, cols);
-    if(didWin(Player_board, level, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+    if(didWin(Player_board, level, bombNumber, rows, cols) == 1){	//Skoro wygrana to koniec gry
       *playState = false;
     }
     }
@@ -54,7 +54,7 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
 }
 
 // Funkcja oznaczająca komórkę
-void markCell(char **board, char **Player_board, int row, int col, int rows, int cols) {
+void markCell(char **Player_board, int row, int col, int rows, int cols) {
 	if (Player_board[row][col] == '#') {
         	printf("Oznaczyłes komorke [%d][%d] jako flage.\n", row, col);
 		Player_board[row][col] = 'f';
@@ -70,8 +70,9 @@ void markCell(char **board, char **Player_board, int row, int col, int rows, int
 }
 
 // Funkcja do obsługi wejścia od użytkownika
-void entry(char **board, char **Player_board, int rows, int cols, int level, int bombNumber) {
+void entry(char **Player_board, int rows, int cols, int level, int bombNumber) {
     char moveType = '\0';
+    char **board;
     int row = 0;
     int col = 0;
     bool playState = true; 
@@ -98,20 +99,16 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
         // Ruchy
         if (moveType == 'r') {
 	    if (firstMove) {
-	    	while (board[row][col] != '.') {
-            //Mysle ze tu dobrym pomyslem jest zwalnianie pamieci niepasujacej tablicy
-            freeBoard(board, rows);
-		    board = initializeBoard(level, rows, cols, bombNumber);
-		}
+	    	board = initializeBoard(rows, cols, bombNumber, row, col);
 	    	firstMove = false;
 	    }
             showCell(&playState, board, Player_board, row, col, rows, cols, level, bombNumber);
         } else if (moveType == 'f') {
-            markCell(board, Player_board, row, col, rows, cols);
+            markCell(Player_board, row, col, rows, cols);
         } else {
             printf("Nieznany ruch: '%c'. Aby odkryc komorke: r [wiersz] [kolumna]; aby oznaczyc komorke jako flage: f [wiersz] [kolumna].\n", moveType);
 	    showCurrentBoard(Player_board, rows, cols);
         }
     }
-
+    freeBoard(board, rows);
 }

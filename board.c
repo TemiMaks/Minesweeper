@@ -59,40 +59,20 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   }
 }
 
-void placeBombs(char **board, int rows, int cols, int bombNumber) {
-  int *bombs = (int*)malloc(bombNumber * sizeof(int));  // Przechowuje numery komorek na których będą bomby
+// Rozmieszczenie bomb na planszy zapewniajac, ze pierwsze odkryte pole ma byc puste
+void placeBombs(char **board, int rows, int cols, int bombNumber, int startRow, int startCol) { 
   int bombsPlaced = 0;
 
   while (bombsPlaced < bombNumber) {
-    int newBomb = getRandomNumber(0, rows * cols - 1); // Spośród komórek planszy
+    int newBombRow = getRandomNumber(0, rows - 1); // Losowe wybranie komorki, w ktorej umieszczamy bombe
+    int newBombCol = getRandomNumber(0, cols - 1);
 
-    // Sprawdzenie, czy ta liczba już została wylosowana
-    bool isDuplicate = false;
-    for (int i = 0; i < bombsPlaced; i++) {
-      if (bombs[i] == newBomb) {
-        isDuplicate = true;
-        i = bombsPlaced;  // Wyjście z pętli
-      }
-    }
-
-    // Jeśli liczba nie została wylosowana, dodajemy ją
-    if (isDuplicate == false) {
-      bombs[bombsPlaced] = newBomb;
+    // Sprawdzenie, czy ta komorka jest juz bomba oraz czy nie graniczy z polem startowym
+    if (board[newBombRow][newBombCol] != 'B' && (newBombRow < startRow - 1 || newBombRow > startRow + 1 || newBombCol < startCol - 1 || newBombCol > startCol + 1)) {
+      board[newBombRow][newBombCol] = 'B';
       bombsPlaced++;
     }
   }
-
-  // Rozmieszczanie bomb na planszy
-  for (int i = 0; i < bombsPlaced; i++) {
-    int index = bombs[i];
-    //Konwersja tablicy jednowymiarowej na dwuwymiarowa
-    int row = index / cols;  // Numer wiersza
-    int col = index % cols;  // Numer kolumny
-    board[row][col] = 'B';  // Oznaczenie bomby
-  }
-
-  // Zwolnienie pamięci
-  free(bombs);
 }
 
 // Zapisywanie liczb w polach graniczacych z bombami
@@ -145,21 +125,21 @@ void showCurrentBoard(char **board, int rows, int cols) {
                     } else { // Liczba
                         // Kolorowanie liczb od 1 do 8
                         if (board[i][j] == '1') {
-                            printf("\033[38;5;32m%c\033[0m", board[i][j]); // Zielony dla 1
+                            printf("\033[38;2;1;0;255m%c\033[0m", board[i][j]); // Niebieski dla 1
                         } else if (board[i][j] == '2') {
-                            printf("\033[38;5;34m%c\033[0m", board[i][j]); // Niebieski dla 2
+                            printf("\033[38;2;1;127;1m%c\033[0m", board[i][j]); // Zielony dla 2
                         } else if (board[i][j] == '3') {
-                            printf("\033[38;5;196m%c\033[0m", board[i][j]); // Czerwony dla 3
+                            printf("\033[38;2;255;0;0m%c\033[0m", board[i][j]); // Czerwony dla 3
                         } else if (board[i][j] == '4') {
-                            printf("\033[38;5;208m%c\033[0m", board[i][j]); // Pomarańczowy dla 4
+                            printf("\033[38;2;1;0;128m%c\033[0m", board[i][j]); // Granatowy dla 4
                         } else if (board[i][j] == '5') {
-                            printf("\033[38;5;226m%c\033[0m", board[i][j]); // Żółty dla 5
+                            printf("\033[38;2;129;1;2m%c\033[0m", board[i][j]); // Ciemnoczerwony dla 5
                         } else if (board[i][j] == '6') {
-                            printf("\033[38;5;82m%c\033[0m", board[i][j]); // Zielony dla 6
+                            printf("\033[38;2;0;128;129m%c\033[0m", board[i][j]); // Jasnoniebieski dla 6
                         } else if (board[i][j] == '7') {
-                            printf("\033[38;5;135m%c\033[0m", board[i][j]); // Różowy dla 7
+                            printf("\033[38;2;0;0;0135m%c\033[0m", board[i][j]); // Czarny dla 7
                         } else if (board[i][j] == '8') {
-                            printf("\033[38;5;93m%c\033[0m", board[i][j]); // Fioletowy dla 8
+                            printf("\033[38;2;128;128;128m%c\033[0m", board[i][j]); // Szary dla 8
                         } else {
                             printf("%c", board[i][j]); // Inne znaki wyświetl normalnie
                         }
@@ -183,7 +163,7 @@ void showCurrentBoard(char **board, int rows, int cols) {
 
 
 // Tablica widoczna dla gracza
-char** initializePlayerBoard(int level, int rows, int cols) {
+char** initializePlayerBoard(int rows, int cols) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
@@ -211,7 +191,7 @@ char** initializePlayerBoard(int level, int rows, int cols) {
 }
 
 /// Tablica niewidoczna dla gracza, zawierajaca polozenia bomb i liczby bomb na sasiadujacych komorkach
-char** initializeBoard(int level, int rows, int cols, int bombNumber) {
+char** initializeBoard(int rows, int cols, int bombNumber, int startRow, int startCol) {
   // Alokacja pamięci dla planszy
   char **board = (char **)malloc(rows * sizeof(char *));
 
@@ -236,7 +216,7 @@ char** initializeBoard(int level, int rows, int cols, int bombNumber) {
   }
   
   // Rozmieszczanie bomb
-  placeBombs(board, rows, cols, bombNumber);
+  placeBombs(board, rows, cols, bombNumber, startRow, startCol);
 
   // Zapisanie komorek z 'liczbami' bomb
   solveBoard(board, rows, cols);
