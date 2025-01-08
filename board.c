@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "board.h"
 
 // Funkcja do generowania losowej liczby miedzy min a max (wlacznie)
@@ -8,12 +9,11 @@ int getRandomNumber(int min, int max) {
   return rand() % (max - min + 1) + min;
 }
 
-//Ustawienie ilosci kolumn i wierszy w zaleznosci od poziomu
-//[!] Dodac wlasne parametry??-ISOD
+//Ustawienie ilosci kolumn i wierszy w zaleznosci od poziomu lub ustawienie wlasnych parametrow
 void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   if (level == 1) {
-    *rows = 8;
-    *cols = 8;
+    *rows = 9;
+    *cols = 9;
     *bombNumber = 10;
   } else if (level == 2) {
     *rows = 16;
@@ -21,10 +21,41 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
     *bombNumber = 40;
   } else if (level == 3) {
     *rows = 16;
-    *cols = 32;
+    *cols = 30;
     *bombNumber = 99;
+  } else if (level == 4) { 
+    while (true) {
+      printf("Podaj liczbe wierszy: ");
+      scanf("%d", rows);
+      if (*rows > 1) {
+	break;
+      } else {
+	printf("Nieprawidlowa wartosc.\n");
+      }
+    }
+    while (true) {
+      printf("Podaj liczbe kolumn: ");
+      scanf("%d", cols);
+      if (*cols > 1) {
+	break;
+      } else {
+	printf("Nieprawidlowa wartosc.\n");
+      }
+    }
+    while (true) {
+      printf("Podaj liczbe bomb: ");
+      scanf("%d", bombNumber);
+      if (*bombNumber > 0 && *bombNumber < (*rows) * (*cols)) { /* Sprawdzenie czy ilosc bomb pozwala
+								 * na wygenerowanie planszy (nie moze byc 
+								 * wiecej bomb niz wszystkich pol na planszy)
+								 */ 
+	break;
+      } else {
+      	printf("Nieprawidlowa wartosc.\n");
+      }
+    }
   } else {
-    printf("Zly poziom\n");
+    printf("Zly poziom.\n");
   }
 }
 
@@ -54,7 +85,7 @@ void placeBombs(char **board, int rows, int cols, int bombNumber) {
   // Rozmieszczanie bomb na planszy
   for (int i = 0; i < bombsPlaced; i++) {
     int index = bombs[i];
-    //Konwersja tablicy jednowymairowej na dwuwymiarowa
+    //Konwersja tablicy jednowymiarowej na dwuwymiarowa
     int row = index / cols;  // Numer wiersza
     int col = index % cols;  // Numer kolumny
     board[row][col] = 'B';  // Oznaczenie bomby
@@ -87,60 +118,63 @@ void solveBoard(char **board, int rows, int cols) {
 
 void showCurrentBoard(char **board, int rows, int cols) {
     // Wyświetlenie aktualnej planszy
+    int exp_row = (int)log10(rows) + 1;
+    int exp_col = (int)log10(cols) + 1;
     for (int i = -1; i < rows; i++) {
         for (int j = -1; j < cols; j++) {
             if (i < 0) { // Nagłówki kolumn
                 if (j < 0) {
-                    printf("    ");
+		    for (int k = 0; k < exp_row + 3; k++)
+                        printf(" ");
                 } else {
-                    printf("%d ", j);
+                    printf("%d", j);
+		    for (int k = 0; k < exp_col - (j > 0 ? (int)log10(j) : (int)log10(j+1)); k++)
+			printf(" ");
                 }
-                if (j <= 9 && cols > 9)
-                    printf(" ");
             } else { // Wiersze planszy
                 if (j < 0) { // Nagłówki wierszy
-                    if (i <= 9 && rows > 9)
-                        printf("%d  | ", i); // Białe dla nagłówków wierszy
-                    else
-                        printf("%d | ", i);
+                    printf("%d", i);
+		    for (int k = 0; k < exp_row - (i > 0 ? (int)log10(i) : (int)log10(i+1)); k++)
+			printf(" ");
+                    printf("| ");
                 } else { // Pola gry
                     if (board[i][j] == '*') { // Jeśli to mina, wyświetl normalnie
-                        printf("%c ", board[i][j]);
+                        printf("%c", board[i][j]);
                     } else if (board[i][j] == '#') { // Nieodkryte pole, normalnie
-                        printf("%c ", board[i][j]);
+                        printf("%c", board[i][j]);
                     } else { // Liczba
                         // Kolorowanie liczb od 1 do 8
                         if (board[i][j] == '1') {
-                            printf("\033[38;5;32m%c \033[0m", board[i][j]); // Zielony dla 1
+                            printf("\033[38;5;32m%c\033[0m", board[i][j]); // Zielony dla 1
                         } else if (board[i][j] == '2') {
-                            printf("\033[38;5;34m%c \033[0m", board[i][j]); // Niebieski dla 2
+                            printf("\033[38;5;34m%c\033[0m", board[i][j]); // Niebieski dla 2
                         } else if (board[i][j] == '3') {
-                            printf("\033[38;5;196m%c \033[0m", board[i][j]); // Czerwony dla 3
+                            printf("\033[38;5;196m%c\033[0m", board[i][j]); // Czerwony dla 3
                         } else if (board[i][j] == '4') {
-                            printf("\033[38;5;208m%c \033[0m", board[i][j]); // Pomarańczowy dla 4
+                            printf("\033[38;5;208m%c\033[0m", board[i][j]); // Pomarańczowy dla 4
                         } else if (board[i][j] == '5') {
-                            printf("\033[38;5;226m%c \033[0m", board[i][j]); // Żółty dla 5
+                            printf("\033[38;5;226m%c\033[0m", board[i][j]); // Żółty dla 5
                         } else if (board[i][j] == '6') {
-                            printf("\033[38;5;82m%c \033[0m", board[i][j]); // Zielony dla 6
+                            printf("\033[38;5;82m%c\033[0m", board[i][j]); // Zielony dla 6
                         } else if (board[i][j] == '7') {
-                            printf("\033[38;5;135m%c \033[0m", board[i][j]); // Różowy dla 7
+                            printf("\033[38;5;135m%c\033[0m", board[i][j]); // Różowy dla 7
                         } else if (board[i][j] == '8') {
-                            printf("\033[38;5;93m%c \033[0m", board[i][j]); // Fioletowy dla 8
+                            printf("\033[38;5;93m%c\033[0m", board[i][j]); // Fioletowy dla 8
                         } else {
-                            printf("%c ", board[i][j]); // Inne (np. '0') wyświetl normalnie
+                            printf("%c", board[i][j]); // Inne znaki wyświetl normalnie
                         }
                     }
+		    for (int k = 0; k < exp_col; k++)
+		        printf(" ");
                 }
             }
-        }
-        if (i < 0) {
-            printf("\n   ");
-            if (rows > 9)
+	}
+	if (i < 0) {
+            printf("\n");
+            for (int j = 0; j < exp_row + 2; j++)
                 printf(" ");
-            for (int j = 0; j < cols; j++) {
-                printf("--");
-                if (cols > 9)
-                    printf("-");
+            for (int j = 0; j < cols * (exp_col + 1); j++) {
+                printf("-");
             }
         }
         printf("\n");

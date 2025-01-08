@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv) {
     srand(time(NULL));
-    int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 3) ? atoi(argv[1]) : 2;
+    int level = (argc > 1 && atoi(argv[1]) >= 1 && atoi(argv[1]) <= 4) ? atoi(argv[1]) : 2;
 
     int rows = 0, cols = 0, bombNumber = 0;
 
