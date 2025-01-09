@@ -5,6 +5,17 @@
 #include <ctype.h>
 #include <string.h>
 
+/**
+ * Zwalnia zaalokowaną pamięć i zamyka plik.
+ */
+void freeResources(char **board, char **playerBoard, int rows_mem, FILE *file) {
+    freeBoard(board, rows_mem);
+    free(board);
+    free(playerBoard);
+    fclose(file);
+}
+
+
 int combineDigits(int *entry, int digit) {
     // Jeśli entry jest -1, to oznacza, że to pierwsza cyfra
     if (*entry == -1) {
@@ -97,42 +108,40 @@ void reallocateColsMemory(char **board, int *rows_mem, int rows, int *cols_mem) 
     }
 }
 
-void processMove(char* moveType,char** board, char** playerBoard, int rows, int max_cols, int *bombNumber, int *entryRow, int *entryCol, FILE* file, int buffLine, int rows_mem) {
+int processMove(char* moveType,char** board, char** playerBoard, int rows, int max_cols, int *bombNumber, int *entryRow, int *entryCol, FILE* file, int buffLine, int rows_mem) {
      if (*moveType != '\0'){
         int returnEntry = entryFromFile(board, playerBoard, rows + 1, max_cols, *bombNumber, *moveType, *entryRow, *entryCol, buffLine);
         if (returnEntry == 1) {
             printf("Nieprawidlowy ruch. Przerywam czytanie");
-            getCorrectInputs(playerBoard, rows + 1, max_cols, *bombNumber);
-            freeBoard(board, rows_mem);
-            free(board);
-            free(playerBoard);
-            fclose(file);
+            getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
+            showCurrentBoard(playerBoard, rows, max_cols);
+            freeResources(board, playerBoard, rows_mem, file);
+            return 0;
         } else if (returnEntry == 2) {
             printf("Nieznany ruch: '%c'. Przerywam czytanie\n", *moveType);
-            getCorrectInputs(playerBoard,rows + 1, max_cols, *bombNumber);
-            freeBoard(board, rows_mem);
-            free(board);
-            free(playerBoard);
-            fclose(file);
-        } else if (returnEntry == 3) {
-            getCorrectInputs(playerBoard, rows + 1, max_cols, *bombNumber);
-            freeBoard(board, rows_mem);
-            free(board);
-            free(playerBoard);
-            fclose(file);
-        } else if (returnEntry == 4 ) {
-            getCorrectInputs(playerBoard, rows + 1, max_cols, *bombNumber);
-            freeBoard(board, rows_mem);
-            free(board);
-            free(playerBoard);
-            fclose(file);
+            getShownCells(playerBoard,rows + 1, max_cols, *bombNumber, buffLine);
+            showCurrentBoard(playerBoard, rows, max_cols);
+            freeResources(board, playerBoard, rows_mem, file);
+            return 0;
+        } else if (returnEntry == 3) {  //Bomba
+            getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
+            showCurrentBoard(playerBoard, rows, max_cols);
+            freeResources(board, playerBoard, rows_mem, file);
+            return 0;
+        } else if (returnEntry == 4) { //Wygrana
+            getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
+            showCurrentBoard(board, rows, max_cols);
+            freeResources(board, playerBoard, rows_mem, file);
+            return 1;   //Wymagania z instrukcji
         }
         *moveType = '\0';
         *entryCol = -1, *entryRow = -1;
+         return 5;
     }
+    return 5;
 }
 
-void loadFromFile(const char *filename, int *bombNumber) {
+int loadFromFile(const char *filename, int *bombNumber) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("[!] Blad otwarcia pliku.\n");
@@ -185,19 +194,26 @@ void loadFromFile(const char *filename, int *bombNumber) {
                 int last = recursiveCase(buff, i, &entryRow);
                 last = recursiveCase(buff, last + 1, &entryCol);
                 // Po wszystkim analiza inputu, tu trzeba wywolac analize tych wejsc entryCol, entryRow, moveType
-                processMove(&moveType, board, playerBoard, rows, max_cols, bombNumber, &entryRow, &entryCol, file, buffLine, rows_mem);
+                int play = processMove(&moveType, board, playerBoard, rows, max_cols, bombNumber, &entryRow, &entryCol, file, buffLine, rows_mem);
+                if (play == 1) {
+                    printf("Powodzenie\n");
+                } else if (play == 0) {
+                    printf("Niepowodzenie\n");
+                }
                 entryStart = 0;
                 }
             }
     }
 
     //Tu jesli nie przegra, nie wygra, po prostu za malo inputow do czegokolwiek
-    getCorrectInputs(playerBoard, rows + 1, max_cols, *bombNumber);
+    getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
+    showCurrentBoard(playerBoard, rows, max_cols);
     freeBoard(board, rows_mem);
     free(board);
     free(playerBoard);
 
     // Zamykanie pliku po zakończeniu
     fclose(file);
+
+    return 0;
 }
-//Blednie liczona jest ilosc rzedow

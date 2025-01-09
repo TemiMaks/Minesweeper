@@ -30,12 +30,13 @@ int main(int argc, char **argv) {
         // Sprawdzenie, czy plik ma rozszerzenie .txt
         size_t len = strlen(file);
         if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
+            system("clear");
             printf("Tryb czytania z pliku: %s\n", file);
-            loadFromFile(file, &bombNumber);
-            return 0;
+            int fileExit = loadFromFile(file, &bombNumber);
+            return fileExit;
         } else {
             fprintf(stderr, "Plik musi miec rozszerzenie .txt\n");
-            return 1;
+            return 3;
         }
     }
 

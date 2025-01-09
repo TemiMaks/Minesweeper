@@ -57,7 +57,7 @@ int entryFromFile(char **board, char **Player_board, int rows, int cols, int bom
 }
 
 
-void getCorrectInputs(char **Player_board, int rows, int cols, int bombNumber) {
+void getShownCells(char **Player_board, int rows, int cols, int bombNumber, int buffLine) {
     int correctInputs = 0;
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < cols; j++){
@@ -67,6 +67,6 @@ void getCorrectInputs(char **Player_board, int rows, int cols, int bombNumber) {
         }
     }
     printf("Liczba odkrytych pol: %d\n", correctInputs);
-    showCurrentBoard(Player_board, rows, cols);
+    printf("Liczba poprawnych krokow %d\n", buffLine);
 }
 
