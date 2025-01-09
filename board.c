@@ -118,8 +118,8 @@ void showCurrentBoard(char **board, int rows, int cols) {
 			printf(" ");
                     printf("| ");
                 } else { // Pola gry
-                    if (board[i][j] == '*') { // Jeśli to mina, wyświetl normalnie
-                        printf("%c", board[i][j]);
+                    if (board[i][j] == 'B') { // Jeśli to mina, wyświetl na czarno
+                        printf("\033[38;2;0;0;0m%c\033[0m", board[i][j]);
                     } else if (board[i][j] == '#') { // Nieodkryte pole, normalnie
                         printf("%c", board[i][j]);
                     } else { // Liczba
@@ -137,7 +137,7 @@ void showCurrentBoard(char **board, int rows, int cols) {
                         } else if (board[i][j] == '6') {
                             printf("\033[38;2;0;128;129m%c\033[0m", board[i][j]); // Jasnoniebieski dla 6
                         } else if (board[i][j] == '7') {
-                            printf("\033[38;2;0;0;0135m%c\033[0m", board[i][j]); // Czarny dla 7
+                            printf("\033[38;2;0;0;0m%c\033[0m", board[i][j]); // Czarny dla 7
                         } else if (board[i][j] == '8') {
                             printf("\033[38;2;128;128;128m%c\033[0m", board[i][j]); // Szary dla 8
                         } else {

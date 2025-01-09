@@ -37,9 +37,10 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     //Jesli nie jest to bomba to odkrywamy komorke
     else if (Player_board[row][col] == '#') {
 	printf("Odkryto komorke [%d][%d].\n", row, col);
-    showFreeCells(board, Player_board, row, col, rows, cols);
-    if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
-      *playState = false;
+        showFreeCells(board, Player_board, row, col, rows, cols);
+        if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+            *playState = false;
+        }
     }
     else if (Player_board[row][col] == 'f') {
 	printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);

@@ -207,7 +207,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
 
     //Tu jesli nie przegra, nie wygra, po prostu za malo inputow do czegokolwiek
     getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
-    showCurrentBoard(playerBoard, rows, max_cols);
+    showCurrentBoard(playerBoard, rows + 1, max_cols);
     freeBoard(board, rows_mem);
     free(board);
     free(playerBoard);
