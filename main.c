@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
         if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
             printf("Tryb czytania z pliku\n");
             int bombNumber = 0;
-            char **fileBoard = loadFromFile(argv[2], &bombNumber);
+            loadFromFile(argv[2], &bombNumber);
             return 0;
         }
 

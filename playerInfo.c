@@ -34,7 +34,6 @@ int didWin(char **Player_board,int bombNumber, int rows, int cols){
  } else {
    return 0;
  }
-
 }
 
 int isUIDUnique(int uid){
