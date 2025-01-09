@@ -12,8 +12,8 @@ int getRandomNumber(int min, int max) {
 //[!] Dodac wlasne parametry??-ISOD
 void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   if (level == 1) {
-    *rows = 8;
-    *cols = 8;
+    *rows = 9;
+    *cols = 9;
     *bombNumber = 10;
   } else if (level == 2) {
     *rows = 16;
@@ -21,7 +21,7 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
     *bombNumber = 40;
   } else if (level == 3) {
     *rows = 16;
-    *cols = 32;
+    *cols = 30;
     *bombNumber = 99;
   } else {
     printf("Zly poziom\n");

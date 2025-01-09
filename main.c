@@ -2,34 +2,50 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "board.h"
 #include "input.h"
 #include "playerInfo.h"
 #include "file.h"
 
 int main(int argc, char **argv) {
-    //Sprawdzam czy uzytkownik chce skorzystac z trybu wczytywania pliku
-    if (argc == 3 && strcmp(argv[1], "-f") == 0) {
-        // Sprawdzenie, czy plik ma rozszerzenie .txt
-        const char *file = argv[2];
-        size_t len = strlen(file);
-        if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
-            printf("Tryb czytania z pliku\n");
-            int bombNumber = 0;
-            loadFromFile(argv[2], &bombNumber);
-            return 0;
-        }
+    int opt;
+    char *file = NULL;
+    int bombNumber = 0;
 
-    return 1;
+    // Parsowanie argumentów za pomoca getopt
+    while ((opt = getopt(argc, argv, "f:")) != -1) {
+        switch (opt) {
+            case 'f':
+                file = optarg; // Pobranie nazwy pliku
+                break;
+            case '?':
+                fprintf(stderr, "Nieznana opcja: -%c\n", optopt);
+                return 1;
+        }
     }
 
+    // Sprawdzenie trybu pliku
+    if (file) {
+        // Sprawdzenie, czy plik ma rozszerzenie .txt
+        size_t len = strlen(file);
+        if (len > 4 && strcmp(file + len - 4, ".txt") == 0) {
+            printf("Tryb czytania z pliku: %s\n", file);
+            loadFromFile(file, &bombNumber);
+            return 0;
+        } else {
+            fprintf(stderr, "Plik musi miec rozszerzenie .txt\n");
+            return 1;
+        }
+    }
 
+    // Tryb standardowy (bez pliku)
     srand(time(NULL));
     printf("Prosze podac poziom trudnosci 1-3: ");
     int level;
-    int rows = 0, cols = 0, bombNumber = 0;
+    int rows = 0, cols = 0;
 
-    // Sprawdzenie, czy podano liczbę
+    // Sprawdzenie, czy podano liczbe
     while (scanf("%d", &level) != 1) {
         printf("Bledny argument, podaj poprawny: ");
         while (getchar() != '\n'); // Czyści bufor wejściowy
@@ -51,17 +67,16 @@ int main(int argc, char **argv) {
     char **Player_board = initializePlayerBoard(rows, cols);
 
     system("clear"); // Wyczyszczenie ekranu przed rozpoczeciem
-    entry(board, Player_board, rows, cols,bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
+    entry(board, Player_board, rows, cols, bombNumber);  // To zasadniczo trzyma cala gre
 
-    //Uzytkownik
+    // Użytkownik
     int score = getScore(Player_board, level, rows, cols);
     Info *Player = getPlayerInfo(score);
     printFile();
 
-    //Zwolnienie pamieci
+    // Zwolnienie pamieci
     freeBoard(board, rows);
     freeBoard(Player_board, rows);
-
     free(Player);
 
     return 0;

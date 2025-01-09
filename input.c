@@ -52,28 +52,6 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     // Na koniec pokazujemy aktualna plansze
     showCurrentBoard(Player_board, rows, cols);
 }
-// Funkcja oblsugujaca 'r' z pliku
-void showCellFromFile(bool *playState, char **board, char **Player_board, int chosenRow, int chosenCol, int rows, int cols, int bombNumber) {
-    // Jeżeli trafiliśmy na bombę, kończymy grę
-    if (board[chosenRow][chosenCol] == 'B') {
-        printf("Koniec gry! Tyle udalo sie odkryc!\n");
-        Player_board[chosenRow][chosenCol] = 'B';
-        showCurrentBoard(Player_board, rows, cols); // Końcowa plansza
-        *playState = false;
-        return; // Koniec gry
-    } else if (Player_board[chosenRow][chosenCol] == '#') {	//Jesli nie jest to bomba to odkrywamy komorke
-    	showFreeCells(board, Player_board, chosenRow, chosenCol, rows, cols);
-    	if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
-      		printf("Brawo wygrales!\n");
-    	}
-    } else if (Player_board[chosenRow][chosenCol] == 'f') {
-		printf("Probujesz odkryc flage, ignoruje.\n");
-        return;
-    } else {
-		printf("Probujesz odkryc znana komorke, ignoruje.\n");
-        return;
-    }
-}
 
 // Funkcja oznaczająca komórkę
 void markCell(char **board, char **Player_board, int row, int col, int rows, int cols) {
@@ -89,18 +67,6 @@ void markCell(char **board, char **Player_board, int row, int col, int rows, int
 		printf("Nie mozna oznaczyc komorki [%d][%d] jako flagi; komorka juz odkryta.\n", row, col);
 	}
         showCurrentBoard(Player_board, rows, cols);
-}
-
-// Funkcja oznaczająca komórkę z pliku
-void markCellFromFile(char **Player_board, int row, int col, int rows, int cols) {
-	if (Player_board[row][col] == '#') {
-		Player_board[row][col] = 'f';
-	}
-	else if (Player_board[row][col] == 'f') {
-		Player_board[row][col] = '#';
-	}
-	else { //Komorka juz odkryta, nic nie robie
-	}
 }
 
 // Funkcja do obsługi wejścia od użytkownika
@@ -147,39 +113,6 @@ void entry(char **board, char **Player_board, int rows, int cols, int bombNumber
 	    showCurrentBoard(Player_board, rows, cols);
         }
     }
-}
-
-//Jednorazowa (w odroznieniu od starego entry) obsluga wejscia- wielokrotnie wywolywania w file.c
-int entryFromFile(char **board, char **Player_board, int rows, int cols, int bombNumber, char moveType, int chosenRow, int chosenCol) {
-  bool playState = true;
-        // Sprawdzenie poprawności argumentów
-        if (chosenRow < 0 || chosenCol < 0 || chosenRow >= rows || chosenCol >= cols) {
-            return 1;
-        }
-        // Ruchy
-        if (moveType == 'r') {
-        	showCellFromFile(&playState, board, Player_board, chosenRow, chosenCol, rows, cols, bombNumber);
-                if(playState == false) {
-                  return 3;	//Automatyczne przerwanie i podanie wyniku- wygrana
-                }
-        } else if (moveType == 'f') {
-            markCellFromFile(Player_board, chosenRow, chosenCol, rows, cols);
-        } else
-	    	return 2;
-
-	return 0;
-}
-
-void getCorrectInputs(char **Player_board, int rows, int cols, int bombNumber) {
-int correctInputs = 0;
-  for(int i = 0; i < rows; i++){
-    for(int j = 0; j < cols; j++){
-      if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
-       correctInputs++;
-      }
-    }
-  }
-printf("Liczba poprawnych ruchów: %d\n", correctInputs);
 }
 
 
