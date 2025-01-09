@@ -42,7 +42,11 @@ int main(int argc, char **argv) {
 
     // Tryb standardowy (bez pliku)
     srand(time(NULL));
-    printf("Prosze podac poziom trudnosci 1-3: ");
+    printf("Prosze podac poziom trudnosci (1-4):\n"
+           "1 - latwy (9x9, 10 bomb);\n"
+           "2 - sredni (16x16, 40 bomb);\n"
+           "3 - trudny (16x30, 99 bomb);\n"
+           "4 - niestandardowy (dowolne wymiary i liczba bomb);");
     int level;
     int rows = 0, cols = 0;
 
@@ -53,8 +57,8 @@ int main(int argc, char **argv) {
     }
 
     // Sprawdzenie zakresu liczby
-    while (level < 1 || level > 3) {
-        printf("Liczba poza zakresem, podaj poprawna (1-3): ");
+    while (level < 1 || level > 4) {
+        printf("Liczba poza zakresem, podaj poprawna (1-4): ");
         while (scanf("%d", &level) != 1) {
             printf("Bledny argument, podaj poprawny: ");
             while (getchar() != '\n'); // Czyści bufor wejściowy
@@ -63,20 +67,17 @@ int main(int argc, char **argv) {
 
     // Ustawienie parametrów planszy
     setBoardParams(level, &rows, &cols, &bombNumber);
-
-    char **board = initializeBoard(rows, cols, bombNumber);
     char **Player_board = initializePlayerBoard(rows, cols);
 
     system("clear"); // Wyczyszczenie ekranu przed rozpoczeciem
-    entry(board, Player_board, rows, cols, bombNumber);  // To zasadniczo trzyma cala gre
+    entry(Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     // Użytkownik
     int score = getScore(Player_board, level, rows, cols);
     Info *Player = getPlayerInfo(score);
     printFile();
 
-    // Zwolnienie pamieci
-    freeBoard(board, rows);
+    //Zwolnienie pamieci
     freeBoard(Player_board, rows);
     free(Player);
 

@@ -10,7 +10,7 @@ all: $(EXEC)
 
 # Build the executable
 $(EXEC): $(SRCS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ -lm
 
 # Clean build files
 clean:

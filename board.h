@@ -4,10 +4,10 @@
 
 int getRandomNumber(int min, int max);
 void setBoardParams(int level, int *rows, int *cols, int *bombNumber);
-void placeBombs(char **board, int rows, int cols, int bombNumber);
+void placeBombs(char **board, int rows, int cols, int bombNumber, int startRow, int startCol);
 void solveBoard(char **board, int rows, int cols);
 void showCurrentBoard(char **board, int rows, int cols);
-char** initializeBoard(int rows, int cols, int bombNumber);
+char** initializeBoard(int rows, int cols, int bombNumber, int startRow, int startCol);
 char** initializePlayerBoard(int rows, int cols);
 void freeBoard(char **board, int rows);
 
