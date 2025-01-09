@@ -28,7 +28,7 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
       printf("Podaj liczbe wierszy: ");
       scanf("%d", rows);
       if (*rows > 1) {
-	break;
+	      break;
       } else {
 	printf("Nieprawidlowa wartosc.\n");
       }
@@ -160,7 +160,6 @@ void showCurrentBoard(char **board, int rows, int cols) {
         printf("\n");
     }
 }
-
 
 // Tablica widoczna dla gracza
 char** initializePlayerBoard(int rows, int cols) {

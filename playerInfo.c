@@ -18,7 +18,7 @@ printf("Zdobyles %d punktow na %d poziomie\n", score, level);
 return score;
 }
 
-int didWin(char **Player_board,int level, int bombNumber, int rows, int cols){
+int didWin(char **Player_board,int bombNumber, int rows, int cols){
   //Warunki wygranej
     int knownCells = 0;
   for(int i = 0; i < rows; i++){
@@ -34,7 +34,6 @@ int didWin(char **Player_board,int level, int bombNumber, int rows, int cols){
  } else {
    return 0;
  }
-
 }
 
 int isUIDUnique(int uid){
@@ -147,7 +146,7 @@ Info* getPlayerInfo(int score) {
   // Wczytanie nazwy gracza
   printf("Podaj swoja nazwe: ");
   if (fgets(Player->name, sizeof(Player->name), stdin) == NULL) {
-    printf("[!] Błąd wczytywania nazwy!\n");
+    printf("\n[!] Błąd wczytywania nazwy!\n");
     free(Player);
     return NULL;
   }
@@ -159,3 +158,22 @@ Info* getPlayerInfo(int score) {
 
   return Player;
 }
+
+
+void printFile() {
+      FILE *file = fopen("playerInfo.txt", "r+");
+      if (file == NULL) {
+        printf("Dane o graczach nie zostana wyswietlone- plik nie istnieje!\n");
+        return;
+      }
+ printf("\n");
+ printf("Oto lista najlepszych 5 graczy");
+ printf("\n");
+
+ char buffer[1024]; // Do zapisu kazdej linii
+    while (fgets(buffer, sizeof(buffer), file)) {
+        printf("%s", buffer);
+    }
+
+    fclose(file);
+  }
