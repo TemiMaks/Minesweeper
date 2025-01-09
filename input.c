@@ -25,7 +25,7 @@ void showFreeCells(char **board, char **Player_board, int row, int col, int rows
 }
 
 // Funkcja pokazująca komórkę
-void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int level, int bombNumber) {
+void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int bombNumber) {
 
     // Jeżeli trafiliśmy na bombę, kończymy grę
     if (board[row][col] == 'B') {
@@ -38,7 +38,7 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
     else if (Player_board[row][col] == '#') {
 	printf("Odkryto komorke [%d][%d].\n", row, col);
     showFreeCells(board, Player_board, row, col, rows, cols);
-    if(didWin(Player_board, level, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
+    if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
       *playState = false;
     }
     }
@@ -70,7 +70,7 @@ void markCell(char **board, char **Player_board, int row, int col, int rows, int
 }
 
 // Funkcja do obsługi wejścia od użytkownika
-void entry(char **board, char **Player_board, int rows, int cols, int level, int bombNumber) {
+void entry(char **board, char **Player_board, int rows, int cols, int bombNumber) {
     char moveType = '\0';
     int row = 0;
     int col = 0;
@@ -101,11 +101,11 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
 	    	while (board[row][col] != '.') {
             //Mysle ze tu dobrym pomyslem jest zwalnianie pamieci niepasujacej tablicy
             freeBoard(board, rows);
-		    board = initializeBoard(level, rows, cols, bombNumber);
+		    board = initializeBoard(rows, cols, bombNumber);
 		}
 	    	firstMove = false;
 	    }
-            showCell(&playState, board, Player_board, row, col, rows, cols, level, bombNumber);
+            showCell(&playState, board, Player_board, row, col, rows, cols, bombNumber);
         } else if (moveType == 'f') {
             markCell(board, Player_board, row, col, rows, cols);
         } else {
@@ -113,5 +113,8 @@ void entry(char **board, char **Player_board, int rows, int cols, int level, int
 	    showCurrentBoard(Player_board, rows, cols);
         }
     }
-
 }
+
+
+
+
