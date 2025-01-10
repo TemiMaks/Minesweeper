@@ -26,20 +26,24 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
   } else if (level == 4) { 
     while (true) {
       printf("Podaj liczbe wierszy: ");
-      scanf("%d", rows);
-      if (*rows > 1) {
+        scanf("%d", rows);
+      if (*rows >= 1) {
 	      break;
       } else {
-	printf("Nieprawidlowa wartosc.\n");
+          int c;
+          while ((c = getchar()) != '\n' && c != EOF); // Czyszczenie bufora wejściowego
+          printf("Nieprawidlowa wartosc.\n");
       }
     }
     while (true) {
       printf("Podaj liczbe kolumn: ");
       scanf("%d", cols);
-      if (*cols > 1) {
+      if (*cols >= 1) {
 	break;
       } else {
-	printf("Nieprawidlowa wartosc.\n");
+          int c;
+          while ((c = getchar()) != '\n' && c != EOF); // Czyszczenie bufora wejściowego
+          printf("Nieprawidlowa wartosc.\n");
       }
     }
     while (true) {
@@ -51,7 +55,9 @@ void setBoardParams(int level, int *rows, int *cols, int *bombNumber) {
 								 */ 
 	break;
       } else {
-      	printf("Nieprawidlowa wartosc.\n");
+          int c;
+          while ((c = getchar()) != '\n' && c != EOF); // Czyszczenie bufora wejściowego
+          printf("Nieprawidlowa wartosc.\n");
       }
     }
   } else {

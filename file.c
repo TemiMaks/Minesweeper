@@ -15,7 +15,7 @@ void freeResources(char **board, char **playerBoard, int rows_mem, FILE *file) {
     fclose(file);
 }
 
-
+//Funkcja do samego łączenia liczby i cyfry
 int combineDigits(int *entry, int digit) {
     // Jeśli entry jest -1, to oznacza, że to pierwsza cyfra
     if (*entry == -1) {
@@ -26,7 +26,7 @@ int combineDigits(int *entry, int digit) {
     }
     return *entry;
 }
-
+//Rekurencyjnie łączy liczby, uzwane do laczenia char'ów z buffera w ruchy r 12 34
 int recursiveCase(char *buff, int j, int *entry) {
     // Jeśli osiągnięto koniec ciągu, zwróć aktualny indeks
     if (j >= strlen(buff)) {
@@ -54,6 +54,7 @@ int recursiveCase(char *buff, int j, int *entry) {
     return recursiveCase(buff, j + 1, entry);
 }
 
+//Funkcja alokująca pamięc dla tablic o podanych rozmiarach
 char **AllocateMemory(int rows_mem, int cols_mem) {
   char **board = (char **)malloc(rows_mem * sizeof(char *));
     // Sprawdzenie poprawności przypisania pamięci
@@ -72,6 +73,7 @@ char **AllocateMemory(int rows_mem, int cols_mem) {
     return board;
 }
 
+//Realokacja pamieci dla wierszy- musi dodac rowniez nowe kolumny
 void reallocateRowsMemory(char ***board, int rows, int cols, int *rows_mem, int *cols_mem) {
 // Realokowanie pamięci dla wierszy
         *rows_mem *= 2;
@@ -94,6 +96,7 @@ void reallocateRowsMemory(char ***board, int rows, int cols, int *rows_mem, int 
     	}
 }
 
+//Realokacja pamieci dla kolumn- musi dla kazdego wiersza dodac kolejne kolumny
 void reallocateColsMemory(char **board, int *rows_mem, int rows, int *cols_mem) {
   // Realokowanie pamięci dla kolumn w bieżącym wierszu
 	*cols_mem *= 2;
@@ -108,6 +111,7 @@ void reallocateColsMemory(char **board, int *rows_mem, int rows, int *cols_mem) 
     }
 }
 
+//Obsługuje ruchy i wyswietla komunikaty zgodnie z funkcją entryFromFile
 int processMove(char* moveType,char** board, char** playerBoard, int rows, int max_cols, int *bombNumber, int *entryRow, int *entryCol, FILE* file, int buffLine, int rows_mem) {
      if (*moveType != '\0'){
         int returnEntry = entryFromFile(board, playerBoard, rows + 1, max_cols, *bombNumber, *moveType, *entryRow, *entryCol, buffLine);
@@ -141,6 +145,7 @@ int processMove(char* moveType,char** board, char** playerBoard, int rows, int m
     return 5;
 }
 
+//Funkcja czytająca linia po linii plik, wczytuje całą planszę, liczy jej wiersze i kolumny, wywołuje inen funkcje do ruchów
 int loadFromFile(const char *filename, int *bombNumber) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {

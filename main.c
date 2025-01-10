@@ -42,7 +42,8 @@ int main(int argc, char **argv) {
 
     // Tryb standardowy (bez pliku)
     srand(time(NULL));
-    printf("1 - latwy (9x9, 10 bomb);\n"
+    printf("W celu uzycia wlasnego pliku nalezy wywolac program z argumentami -f nazwa_pliku.txt;\n"
+           "1 - latwy (9x9, 10 bomb);\n"
            "2 - sredni (16x16, 40 bomb);\n"
            "3 - trudny (16x30, 99 bomb);\n"
            "4 - niestandardowy (dowolne wymiary i liczba bomb);\n"
