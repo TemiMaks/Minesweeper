@@ -4,8 +4,12 @@
 #include "playerInfo.h"
 #include "board.h"
 
-int getScore(char **Player_board, int level, int rows, int cols){
+int getScore(char **Player_board, int level, int rows, int cols, int bombNumber){
   int cellNumber = 0;
+  int gottenLevel = level;
+  if (level == 4) {
+    level = 0.0217 * bombNumber + 0.922;  //Estimate dla mnoznika, obliczony na podstawie innych mnoznikow
+  }
   for(int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
       if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
@@ -13,9 +17,9 @@ int getScore(char **Player_board, int level, int rows, int cols){
       }
     }
   }
-int score = cellNumber * level;
-printf("Zdobyles %d punktow na %d poziomie\n", score, level);
-return score;
+  int score = cellNumber * level;
+  printf("Zdobyles %d punktow na %d poziomie\n", score, gottenLevel);
+  return score;
 }
 
 int didWin(char **Player_board,int bombNumber, int rows, int cols){

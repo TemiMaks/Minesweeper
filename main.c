@@ -42,11 +42,11 @@ int main(int argc, char **argv) {
 
     // Tryb standardowy (bez pliku)
     srand(time(NULL));
-    printf("Prosze podac poziom trudnosci (1-4):\n"
-           "1 - latwy (9x9, 10 bomb);\n"
+    printf("1 - latwy (9x9, 10 bomb);\n"
            "2 - sredni (16x16, 40 bomb);\n"
            "3 - trudny (16x30, 99 bomb);\n"
-           "4 - niestandardowy (dowolne wymiary i liczba bomb);");
+           "4 - niestandardowy (dowolne wymiary i liczba bomb);\n"
+           "Prosze podac poziom trudnosci (1-4): ");
     int level;
     int rows = 0, cols = 0;
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     entry(Player_board, rows, cols, level, bombNumber);  //To zasadniczo trzyma cala gre- analizuje inputy i konczy jak trafi na bombe
 
     // Użytkownik
-    int score = getScore(Player_board, level, rows, cols);
+    int score = getScore(Player_board, level, rows, cols, bombNumber);
     Info *Player = getPlayerInfo(score);
     printFile();
 
