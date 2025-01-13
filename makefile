@@ -12,10 +12,15 @@ all: $(EXEC)
 $(EXEC): $(SRCS)
 	$(CC) -o $@ $^ -lm
 
+# Build and run tests
+test:
+	$(CC) -o test/test_bin test/test.c $(SRCS) -lm
+	cd test && ./test_bin
+
 # Clean build files
 clean:
-	rm -f $(EXEC)
+	rm -f $(EXEC) test/test_bin
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all clean test
 
