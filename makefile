@@ -2,15 +2,15 @@
 CC = cc
 
 # Files
-SRCS = main.c board.c input.c playerInfo.c file.c fileEntry.c
-EXEC = a.out
+SRCS = board.c input.c playerInfo.c file.c fileEntry.c
+EXEC = saper
 
 # Default target
 all: $(EXEC)
 
 # Build the executable
 $(EXEC): $(SRCS)
-	$(CC) -o $@ $^ -lm
+	$(CC) -o $@ main.c $^ -lm
 
 # Build and run tests
 test:

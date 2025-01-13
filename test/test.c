@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdbool.h>
 #include "test.h"
 #include "../board.h"
 #include "../file.h"
@@ -69,9 +70,26 @@ void test_combineDigits() {
   printf("Testy funkcji combineDigits zakonczone pomyslnie\n");
 }
 
+void testShowCell() {
+  bool playState = 1;
+  char** board = initializeBoard(2, 1, 0, 0, 0);
+  char** playerBoard = initializePlayerBoard(2, 1);
+  board[0][1] = 'B';
+  board[0][0] = '1';
+  markCell(playerBoard, 0, 0, 2, 1);
+  assert(**playerBoard == 'f'); // czy dobrze flaguje
+  showCell(&playState, board, playerBoard, 0, 0, 2, 1, 1);
+  assert(**playerBoard == 'f'); // czy pozwala odkryc oflagowana komorke
+  markCell(playerBoard, 0, 0, 2, 1);
+  assert(**playerBoard != 'f'); // czy odflagowanie dziala
+  showCell(&playState, board, playerBoard, 0, 0, 2, 1, 1);
+  assert(**playerBoard == '1'); // czy odkrywanie komorki dziala
+  printf("Testy funkcji showCell i markCell zakonczone pomyslnie.\n");
+  freeBoard(board, 2);
+  freeBoard(playerBoard, 2);
+} 
 
 int main() {
-
   // Test funkcji setBoardParams
   testSetBoardParams();
 
@@ -83,6 +101,9 @@ int main() {
 
   //Test funkcji combineDigits
   test_combineDigits();
+  
+  //Test funkcji markCell i showCell
+  testShowCell();
 
   printf("Wszystkie testy zakończone pomyślnie!\n");
   return 0;
