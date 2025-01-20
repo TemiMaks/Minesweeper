@@ -1,0 +1,20 @@
+Nazwa gracza: Jakkkk
+UID gracza: 16860223
+Wynik gracza: 126
+----------------------------
+Nazwa gracza: Jakk
+UID gracza: 9023878
+Wynik gracza: 114
+----------------------------
+Nazwa gracza: jj
+UID gracza: 25183635
+Wynik gracza: 49
+----------------------------
+Nazwa gracza: j
+UID gracza: 5494687
+Wynik gracza: 46
+----------------------------
+Nazwa gracza: jaka
+UID gracza: 18091826
+Wynik gracza: 22
+----------------------------

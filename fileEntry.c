@@ -61,7 +61,7 @@ void getShownCells(char **Player_board, int rows, int cols, int bombNumber, int 
     int correctInputs = 0;
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < cols; j++){
-            if((Player_board[i][j] >= 48 && Player_board[i][j] <= 56) || Player_board[i][j] == 46){  // Bo to kod ASCII od 0-8 || .
+            if((Player_board[i][j] >= '0' && Player_board[i][j] <= '8') || Player_board[i][j] == '.'){  // Bo to kod ASCII od 0-8 || .
                 correctInputs++;
             }
         }

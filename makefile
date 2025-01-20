@@ -1,26 +1,29 @@
-# Compiler
+# Kompilator
 CC = cc
 
-# Files
+# Pliki
 SRCS = board.c input.c playerInfo.c file.c fileEntry.c
 EXEC = saper
 
-# Default target
 all: $(EXEC)
 
-# Build the executable
+# Kompilacja programu
 $(EXEC): $(SRCS)
 	$(CC) -o $@ main.c $^ -lm
 
-# Build and run tests
+# Kompilacja w trybie do debugowania
+debug:
+	$(CC) -g -o $(EXEC)_debug main.c $(SRCS) -lm
+	gdb ./$(EXEC)_debug
+
+# Kompilacja w trybie testowania
 test:
 	$(CC) -o test/test_bin test/test.c $(SRCS) -lm
 	cd test && ./test_bin
 
-# Clean build files
+# Czyszczenie
 clean:
-	rm -f $(EXEC) test/test_bin
+	rm -f $(EXEC) $(EXEC)_debug test/test_bin
 
-# Phony targets
 .PHONY: all clean test
 

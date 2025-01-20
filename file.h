@@ -2,7 +2,7 @@
 #define FILE_H
 #include <stdio.h>
 
-void freeResources(char **board, char **playerBoard, int rows_mem, FILE *file);
+void freeResources(char **board, char **playerBoard, int rows_mem, int rows, FILE *file);
 int loadFromFile(const char *filename, int *bombNumber);
 int combineDigits(int *entry, int digit);
 int recursiveCase(char *buff, int j, int *entry);

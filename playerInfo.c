@@ -105,7 +105,7 @@ void updateFile(Info *Player) {
     } else {
         // Sprawdź, czy nowy gracz ma wystarczająco dobry wynik, by wejść do czołówki
         int minScoreIndex = 0;
-        for (int i = 0; i < playerCount - 1; i++) {
+        for (int i = 0; i < playerCount; i++) {
             if (players[i].score < players[minScoreIndex].score) {
                 minScoreIndex = i;
             }
@@ -149,7 +149,7 @@ Info* getPlayerInfo(int score) {
 
   // Wczytanie nazwy gracza
   printf("Podaj swoja nazwe: ");
-  if (fgets(Player->name, sizeof(Player->name), stdin) == NULL) {
+  if (scanf("%s", Player->name) == 0) {
     printf("\n[!] Błąd wczytywania nazwy!\n");
     free(Player);
     return NULL;
@@ -170,9 +170,7 @@ void printFile() {
         printf("Dane o graczach nie zostana wyswietlone- plik nie istnieje!\n");
         return;
       }
- printf("\n");
- printf("Oto lista najlepszych 5 graczy");
- printf("\n");
+ printf("\nOto lista najlepszych 5 graczy:\n\n");
 
  char buffer[1024]; // Do zapisu kazdej linii
     while (fgets(buffer, sizeof(buffer), file)) {

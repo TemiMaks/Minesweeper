@@ -8,9 +8,9 @@
 /**
  * Zwalnia zaalokowaną pamięć i zamyka plik.
  */
-void freeResources(char **board, char **playerBoard, int rows_mem, FILE *file) {
+void freeResources(char **board, char **playerBoard, int rows_mem, int rows, FILE *file) {
     freeBoard(board, rows_mem);
-    free(playerBoard);
+    freeBoard(playerBoard, rows);
     fclose(file);
 }
 
@@ -97,7 +97,7 @@ void reallocateRowsMemory(char ***board, int rows, int cols, int *rows_mem, int 
 void reallocateColsMemory(char **board, int *rows_mem, int rows, int *cols_mem) {
   // Realokowanie pamięci dla kolumn w bieżącym wierszu
 	*cols_mem *= 2;
-    for (int j = 0; j <= rows; j++) {
+    for (int j = 0; j <= *rows_mem; j++) {
     	board[j] = (char *)realloc(board[j], *cols_mem * sizeof(char));
         if (board[j] == NULL) {
         	printf("Blad realokacji pamieci dla kolumny %d!\n", j);
@@ -115,23 +115,23 @@ int processMove(char* moveType,char** board, char** playerBoard, int rows, int m
             printf("Nieprawidlowy ruch. Przerywam czytanie");
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
             showCurrentBoard(playerBoard, rows + 1, max_cols);
-            freeResources(board, playerBoard, rows_mem, file);
+            freeResources(board, playerBoard, rows_mem, rows, file);
             return 0;
         } else if (returnEntry == 2) {
             printf("Nieznany ruch: '%c'. Przerywam czytanie\n", *moveType);
             getShownCells(playerBoard,rows + 1, max_cols, *bombNumber, buffLine);
             showCurrentBoard(playerBoard, rows + 1, max_cols);
-            freeResources(board, playerBoard, rows_mem, file);
+            freeResources(board, playerBoard, rows_mem, rows, file);
             return 0;
         } else if (returnEntry == 3) {  //Bomba
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
             showCurrentBoard(playerBoard, rows + 1, max_cols);
-            freeResources(board, playerBoard, rows_mem, file);
+            freeResources(board, playerBoard, rows_mem, rows, file);
             return 0;
         } else if (returnEntry == 4) { //Wygrana
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
             showCurrentBoard(board, rows + 1, max_cols);
-            freeResources(board, playerBoard, rows_mem, file);
+            freeResources(board, playerBoard, rows_mem, rows, file);
             return 1;   //Wymagania z instrukcji
         }
         *moveType = '\0';
@@ -158,8 +158,8 @@ int loadFromFile(const char *filename, int *bombNumber) {
     int buffLine = 0;
     int play = -1;
 
-    char buff[1024]; // Do zapisu każdej linii
-    while (fgets(buff, sizeof(buff), file)) {
+    char buff[512]; // Do zapisu każdej linii
+    while (fgets(buff, sizeof(buff), file) != NULL) {
         int start = 0, entryStart = 0;
         char moveType = '\0';
         cols = -1; // Resetowanie kolumn dla nowego wiersza
@@ -211,7 +211,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
     if (play != 0 && play != 1) {
       getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
       showCurrentBoard(playerBoard, rows + 1, max_cols);
-      freeResources(board, playerBoard, rows_mem, file);
+      freeResources(board, playerBoard, rows_mem, rows, file);
     }
 
     return 0;
