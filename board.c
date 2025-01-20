@@ -237,3 +237,4 @@ void freeBoard(char **board, int rows) {
   free(board);
 }
 
+

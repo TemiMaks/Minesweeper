@@ -27,8 +27,11 @@ void showFreeCells(char **board, char **Player_board, int row, int col, int rows
 // Funkcja pokazująca komórkę
 void showCell(bool *playState, char **board, char **Player_board, int row, int col, int rows, int cols, int bombNumber) {
 
+	if (Player_board[row][col] == 'f') {
+		printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);
+	}
     // Jeżeli trafiliśmy na bombę, kończymy grę
-    if (board[row][col] == 'B') {
+    else if (board[row][col] == 'B') {
         printf("Koniec gry! BumBum\n");
         showCurrentBoard(board, rows, cols); // Końcowa plansza
         *playState = false;
@@ -41,9 +44,6 @@ void showCell(bool *playState, char **board, char **Player_board, int row, int c
         if(didWin(Player_board, bombNumber,rows, cols) == 1){	//Skoro wygrana to koniec gry
             *playState = false;
         }
-    }
-    else if (Player_board[row][col] == 'f') {
-	printf("Nie mozna odkryc komorki [%d][%d]; komorka jest oznaczona jako flaga.\n", row, col);
     }
     else {
 	printf("Nie mozna odkryc komorki [%d][%d]; komorka juz odkryta.\n", row, col);
