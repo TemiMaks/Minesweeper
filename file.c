@@ -156,7 +156,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
     int max_cols = -1;
     int rows = -1, cols = -1;
     int buffLine = 0;
-    int play = -1;
+    int play = 5;
 
     char buff[512]; // Do zapisu każdej linii
     while (fgets(buff, sizeof(buff), file) != NULL) {
@@ -199,6 +199,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
                 play = processMove(&moveType, board, playerBoard, rows, max_cols, bombNumber, &entryRow, &entryCol, file, buffLine, rows_mem);
                 if (play == 1) {
                     printf("Powodzenie\n");
+                    return 0;
                 } else if (play == 0) {
                     printf("Niepowodzenie\n");
                 }

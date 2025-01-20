@@ -67,6 +67,6 @@ void getShownCells(char **Player_board, int rows, int cols, int bombNumber, int 
         }
     }
     printf("Liczba odkrytych pol: %d\n", correctInputs);
-    printf("Liczba poprawnych krokow %d\n", buffLine);
+    printf("Liczba poprawnych krokow: %d\n", buffLine);
 }
 
