@@ -10,7 +10,6 @@
  */
 void freeResources(char **board, char **playerBoard, int rows_mem, FILE *file) {
     freeBoard(board, rows_mem);
-    free(board);
     free(playerBoard);
     fclose(file);
 }
@@ -81,7 +80,6 @@ void reallocateRowsMemory(char ***board, int rows, int cols, int *rows_mem, int 
         if (*board == NULL) {
         	printf("Blad realokacji pamieci dla wierszy!\n");
             freeBoard(*board,*rows_mem);
-            free(board);
             return;
         }
  // Alokacja pamięci dla nowych kolumn
@@ -90,7 +88,6 @@ void reallocateRowsMemory(char ***board, int rows, int cols, int *rows_mem, int 
         	if ((*board)[j] == NULL) {
         		printf("Blad alokacji dla wiersza %d!\n", j);
                 freeBoard(*board, *rows_mem);
-                free(board);
             	return;
         	}
     	}
@@ -105,7 +102,6 @@ void reallocateColsMemory(char **board, int *rows_mem, int rows, int *cols_mem) 
         if (board[j] == NULL) {
         	printf("Blad realokacji pamieci dla kolumny %d!\n", j);
             freeBoard(board, *rows_mem);
-            free(board);
             return;
          }
     }
@@ -118,23 +114,23 @@ int processMove(char* moveType,char** board, char** playerBoard, int rows, int m
         if (returnEntry == 1) {
             printf("Nieprawidlowy ruch. Przerywam czytanie");
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
-            showCurrentBoard(playerBoard, rows, max_cols);
+            showCurrentBoard(playerBoard, rows + 1, max_cols);
             freeResources(board, playerBoard, rows_mem, file);
             return 0;
         } else if (returnEntry == 2) {
             printf("Nieznany ruch: '%c'. Przerywam czytanie\n", *moveType);
             getShownCells(playerBoard,rows + 1, max_cols, *bombNumber, buffLine);
-            showCurrentBoard(playerBoard, rows, max_cols);
+            showCurrentBoard(playerBoard, rows + 1, max_cols);
             freeResources(board, playerBoard, rows_mem, file);
             return 0;
         } else if (returnEntry == 3) {  //Bomba
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
-            showCurrentBoard(playerBoard, rows, max_cols);
+            showCurrentBoard(playerBoard, rows + 1, max_cols);
             freeResources(board, playerBoard, rows_mem, file);
             return 0;
         } else if (returnEntry == 4) { //Wygrana
             getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
-            showCurrentBoard(board, rows, max_cols);
+            showCurrentBoard(board, rows + 1, max_cols);
             freeResources(board, playerBoard, rows_mem, file);
             return 1;   //Wymagania z instrukcji
         }
@@ -160,6 +156,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
     int max_cols = -1;
     int rows = -1, cols = -1;
     int buffLine = 0;
+    int play = -1;
 
     char buff[1024]; // Do zapisu każdej linii
     while (fgets(buff, sizeof(buff), file)) {
@@ -199,7 +196,7 @@ int loadFromFile(const char *filename, int *bombNumber) {
                 int last = recursiveCase(buff, i, &entryRow);
                 last = recursiveCase(buff, last + 1, &entryCol);
                 // Po wszystkim analiza inputu, tu trzeba wywolac analize tych wejsc entryCol, entryRow, moveType
-                int play = processMove(&moveType, board, playerBoard, rows, max_cols, bombNumber, &entryRow, &entryCol, file, buffLine, rows_mem);
+                play = processMove(&moveType, board, playerBoard, rows, max_cols, bombNumber, &entryRow, &entryCol, file, buffLine, rows_mem);
                 if (play == 1) {
                     printf("Powodzenie\n");
                 } else if (play == 0) {
@@ -211,14 +208,11 @@ int loadFromFile(const char *filename, int *bombNumber) {
     }
 
     //Tu jesli nie przegra, nie wygra, po prostu za malo inputow do czegokolwiek
-    getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
-    showCurrentBoard(playerBoard, rows + 1, max_cols);
-    freeBoard(board, rows_mem);
-    free(board);
-    free(playerBoard);
-
-    // Zamykanie pliku po zakończeniu
-    fclose(file);
+    if (play != 0 && play != 1) {
+      getShownCells(playerBoard, rows + 1, max_cols, *bombNumber, buffLine);
+      showCurrentBoard(playerBoard, rows + 1, max_cols);
+      freeResources(board, playerBoard, rows_mem, file);
+    }
 
     return 0;
 }
